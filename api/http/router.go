@@ -74,6 +74,7 @@ func Router(
 	protected := api.Group("")
 	protected.Use(jwtutil.JWTMiddleware(&cfg))
 	protected.GET("/auth/me", authHandler.Me)
+	protected.PUT("/auth/password", authHandler.ChangePassword)
 
 	// Rutas protegidas de productos
 	protected.POST("/products", productHandler.Create)

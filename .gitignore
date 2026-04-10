@@ -2,7 +2,7 @@ node_modules
 .vscode
 .idea
 .angular
-
+.env
 # Added by cargo
 
 /target

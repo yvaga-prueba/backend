@@ -253,3 +253,75 @@ func splitName(fullName string) (string, string) {
 	}
 	return parts[0], strings.Join(parts[1:], " ")
 }
+
+// ChangePassword godoc
+// @Summary      Cambiar contraseña
+// @Description  Permite a un usuario autenticado cambiar su contraseña.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      map[string]string  true  "Contraseñas vieja y nueva"
+// @Success      200      {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /api/auth/password [put]
+func (h *AuthHandler) ChangePassword(c echo.Context) error {
+	// obtengo token
+	userToken := c.Get("user")
+	if userToken == nil {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "unauthorized"})
+	}
+
+	token, ok := userToken.(*jwt.Token)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "invalid token"})
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "invalid claims"})
+	}
+
+	userIDFloat, ok := claims["user_id"].(float64)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "invalid user_id"})
+	}
+	userID := int64(userIDFloat)
+
+	// lee las contraseñas que manda desde el front
+	var req struct {
+		OldPassword string `json:"oldPassword"`
+		NewPassword string `json:"newPassword"`
+	}
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorGeneral{Message: "invalid request body"})
+	}
+
+	// 3. Buscar al usuario en la base de datos
+	ctx := c.Request().Context()
+	foundUser, err := h.userRepo.GetByID(ctx, userID)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, dto.ErrorGeneral{Message: "user not found"})
+	}
+
+	// 4. Verificar que la contraseña VIEJA sea correcta
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(req.OldPassword)); err != nil {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "La contraseña actual es incorrecta"})
+	}
+
+	// 5. Encriptar la contraseña NUEVA
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorGeneral{Message: "error hashing new password"})
+	}
+
+	// 6. Actualizar y guardar en la base de datos
+	foundUser.Password = string(hashedPassword)
+	
+	
+	if err := h.userRepo.UpdatePassword(ctx, userID, string(hashedPassword)); err != nil {
+	return c.JSON(http.StatusInternalServerError, dto.ErrorGeneral{Message: "error saving new password"})
+}
+
+	// 7. Responder OK a Angular
+	return c.JSON(http.StatusOK, map[string]string{"message": "Contraseña actualizada con éxito"})
+}
