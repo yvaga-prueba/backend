@@ -22,14 +22,16 @@ func NewFavoriteService(r repo.FavoriteRepository) FavoriteService {
 // ToggleFavorite: Si ya tiene me gusta se lo saca, si no lo tiene se lo agrega
 func (s *favoriteService) ToggleFavorite(ctx context.Context, userID, productID int64) (bool, error) {
 	isFav, err := s.repo.IsFavorite(ctx, userID, productID)
-	if err != nil { return false, err }
+	if err != nil {
+		return false, err
+	}
 
 	if isFav {
 		err = s.repo.Remove(ctx, userID, productID)
-		return false, err 
+		return false, err
 	} else {
 		err = s.repo.Add(ctx, userID, productID)
-		return true, err 
+		return true, err
 	}
 }
 

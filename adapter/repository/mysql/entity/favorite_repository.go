@@ -2,9 +2,9 @@ package entity
 
 import (
 	"context"
-	"database/sql"
 	"core/domain/model"
 	"core/domain/repo"
+	"database/sql"
 )
 
 type favoriteRepository struct {
@@ -33,9 +33,11 @@ func (r *favoriteRepository) GetUserFavorites(ctx context.Context, userID int64)
 		FROM products p
 		INNER JOIN user_favorites uf ON p.id = uf.product_id
 		WHERE uf.user_id = ?`
-	
+
 	rows, err := r.db.QueryContext(ctx, query, userID)
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 	defer rows.Close()
 
 	var products []model.Product
@@ -45,10 +47,18 @@ func (r *favoriteRepository) GetUserFavorites(ctx context.Context, userID int64)
 		if err := rows.Scan(&p.ID, &p.Title, &desc, &p.UnitPrice, &p.Stock, &p.Category, &size, &color, &gender); err != nil {
 			return nil, err
 		}
-		if desc.Valid { p.Description = desc.String }
-		if size.Valid { p.Size = size.String }
-		if color.Valid { p.Color = color.String }
-		if gender.Valid { p.Gender = gender.String }
+		if desc.Valid {
+			p.Description = desc.String
+		}
+		if size.Valid {
+			p.Size = size.String
+		}
+		if color.Valid {
+			p.Color = color.String
+		}
+		if gender.Valid {
+			p.Gender = gender.String
+		}
 		products = append(products, p)
 	}
 	return products, nil
@@ -58,7 +68,11 @@ func (r *favoriteRepository) IsFavorite(ctx context.Context, userID, productID i
 	query := `SELECT 1 FROM user_favorites WHERE user_id = ? AND product_id = ?`
 	var dummy int
 	err := r.db.QueryRowContext(ctx, query, userID, productID).Scan(&dummy)
-	if err == sql.ErrNoRows { return false, nil }
-	if err != nil { return false, err }
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }

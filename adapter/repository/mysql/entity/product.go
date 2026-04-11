@@ -14,19 +14,16 @@ import (
 	mysqlerr "github.com/go-sql-driver/mysql"
 )
 
-
 type ProductRepo struct {
 	DB *sql.DB
 }
 
-
 func NewProductRepository(db *sql.DB) *ProductRepo { return &ProductRepo{DB: db} }
-
 
 var _ repo.ProductRepository = (*ProductRepo)(nil)
 
 func (r *ProductRepo) Create(ctx context.Context, p *model.Product) error {
-	
+
 	res, err := r.DB.ExecContext(ctx, `
 		INSERT INTO products (bar_code, title, description, stock, size, color, gender, category, unit_price)
 		VALUES (?,?,?,?,?,?,?,?,?)`,
@@ -34,21 +31,20 @@ func (r *ProductRepo) Create(ctx context.Context, p *model.Product) error {
 	)
 	if err != nil {
 		var me *mysqlerr.MySQLError
-		
+
 		if errors.As(err, &me) && me.Number == 1062 {
 			return errorcode.ErrConflict
 		}
 		return err
 	}
-	
-	
+
 	id, _ := res.LastInsertId()
 	p.ID = id
 	return nil
 }
 
 func (r *ProductRepo) Read(ctx context.Context) ([]model.Product, error) {
-	
+
 	q := `SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at 
 		FROM products`
 
@@ -59,7 +55,7 @@ func (r *ProductRepo) Read(ctx context.Context) ([]model.Product, error) {
 	defer rows.Close()
 
 	var out []model.Product
-	
+
 	for rows.Next() {
 		var p model.Product
 		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
@@ -71,7 +67,7 @@ func (r *ProductRepo) Read(ctx context.Context) ([]model.Product, error) {
 }
 
 func (r *ProductRepo) Update(ctx context.Context, product *model.Product) error {
-	
+
 	query := `
 		UPDATE products
 		SET bar_code = ?, title = ?, description = ?, stock = ?, size = ?, color = ?, gender = ?, category = ?, unit_price = ?, updated_at = NOW()
@@ -98,7 +94,6 @@ func (r *ProductRepo) Update(ctx context.Context, product *model.Product) error 
 		return err
 	}
 
-	
 	if rows == 0 {
 		return fmt.Errorf("product not found")
 	}
@@ -107,7 +102,7 @@ func (r *ProductRepo) Update(ctx context.Context, product *model.Product) error 
 }
 
 func (r *ProductRepo) Delete(ctx context.Context, id int64) error {
-	
+
 	query := `DELETE FROM products WHERE id = ?`
 
 	result, err := r.DB.ExecContext(ctx, query, id)
@@ -120,7 +115,6 @@ func (r *ProductRepo) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	
 	if rows == 0 {
 		return fmt.Errorf("product not found")
 	}
@@ -135,7 +129,7 @@ func (r *ProductRepo) GetByID(ctx context.Context, id int64) (*model.Product, er
 		SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at
 		FROM products WHERE id = ?`, id).
 		Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt)
-	
+
 	// Si MySQL me dice que no hay resultados, devuelvo mi error personalizado para manejarlo limpio en el frontend
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, errorcode.ErrNotFound
@@ -144,12 +138,12 @@ func (r *ProductRepo) GetByID(ctx context.Context, id int64) (*model.Product, er
 }
 
 func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.Product, error) {
-	
+
 	q := `
 		SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at
 		FROM products WHERE 1=1` // El 1=1 es un truco para poder concatenar los "AND" sin romper la sintaxis
 	args := []any{}
-	
+
 	// Voy chequeando qué filtros me pasaron y los agrego a la consulta
 	if f.Category != "" {
 		q += " AND category = ?"
@@ -173,10 +167,10 @@ func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.
 		like := "%" + f.Query + "%"
 		args = append(args, like, like)
 	}
-	
+
 	// Ordeno para mostrar lo más nuevo primero
 	q += " ORDER BY created_at DESC"
-	
+
 	// Configuro la paginación para no traer toda la base de datos de golpe y colapsar la memoria
 	limit := 20
 	if f.Limit > 0 && f.Limit <= 100 {
@@ -204,7 +198,7 @@ func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.
 }
 
 func (r *ProductRepo) UpdateStock(ctx context.Context, id int64, delta int64) error {
-	
+
 	res, err := r.DB.ExecContext(ctx, `UPDATE products SET stock = stock + ? WHERE id = ?`, delta, id)
 	if err != nil {
 		return err
@@ -247,10 +241,10 @@ func (r *ProductRepo) GetRelated(ctx context.Context, category string, excludeID
 		return nil, err
 	}
 
-	// Normalizo el titulo actual, paso a minuscula y le saco los espacios al final 
+	// Normalizo el titulo actual, paso a minuscula y le saco los espacios al final
 	excludeTitleNorm := strings.ToLower(strings.TrimSpace(excludeTitle))
 
-	// Traemos prendas de la misma categoría, pero acá solo filtramos por ID. 
+	// Traemos prendas de la misma categoría, pero acá solo filtramos por ID.
 	// El filtro del titulo lo hacemos abajo ya con los textos limpios.
 	q := `SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at 
 	      FROM products 
@@ -264,7 +258,7 @@ func (r *ProductRepo) GetRelated(ctx context.Context, category string, excludeID
 	defer rows.Close()
 
 	var out []model.Product
-	
+
 	// anotá que titulos ya agrego a la lista
 	seenTitles := make(map[string]bool)
 
@@ -273,7 +267,7 @@ func (r *ProductRepo) GetRelated(ctx context.Context, category string, excludeID
 		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
 			return nil, err
 		}
-		
+
 		// limpio el titulo de la base de datos para compararlo bien (sin mayúsculas ni espacios ocultos)
 		titleLimpio := strings.ToLower(strings.TrimSpace(p.Title))
 
@@ -281,16 +275,16 @@ func (r *ProductRepo) GetRelated(ctx context.Context, category string, excludeID
 		if titleLimpio == excludeTitleNorm || seenTitles[titleLimpio] {
 			continue
 		}
-		
+
 		// Como es un modelo nuevo, lo marco como visto y lo agrego a los resultados
 		seenTitles[titleLimpio] = true
 		out = append(out, p)
-		
+
 		// cuando encuentra 4 prendas , corta y manda al front
 		if len(out) >= limit {
 			break
 		}
 	}
-	
+
 	return out, rows.Err()
 }

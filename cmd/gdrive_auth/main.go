@@ -69,7 +69,7 @@ Luego ejecutá:
 	fmt.Println("  OBTENER REFRESH TOKEN DE GOOGLE DRIVE")
 	fmt.Println(strings.Repeat("=", 70))
 	fmt.Println("\n📌 Abrí esta URL en tu navegador con la cuenta de Google propietaria")
-	fmt.Println("   de la carpeta de Drive:\n")
+	fmt.Println("   de la carpeta de Drive:")
 	fmt.Println("  " + authURL)
 	fmt.Println("\n🔐 Autorizá el acceso → Google te mostrará un código.")
 	fmt.Print("\n📋 Pegá el código aquí y presioná Enter: ")

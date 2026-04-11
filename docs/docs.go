@@ -1838,7 +1838,7 @@ var SwaggerInfo = &swag.Spec{
 	Title:            "Core API",
 	Description:      "API for managing products with authentication",
 	InfoInstanceName: "swagger",
-	SwaggerTemplate:  docTemplate,}
+	SwaggerTemplate:  docTemplate}
 
 func init() {
 	swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)

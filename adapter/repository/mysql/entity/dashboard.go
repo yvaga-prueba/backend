@@ -44,7 +44,7 @@ func (r *DashboardRepo) GetStats(ctx context.Context, startDate time.Time, endDa
 		FROM tickets
 		WHERE status IN ('paid', 'completed') AND created_at BETWEEN ? AND ?
 	`
-/* = r.DB.QueryRowContext(ctx, query1, startStr, endStr).Scan(
+	/* = r.DB.QueryRowContext(ctx, query1, startStr, endStr).Scan(
 		&totalOrders, &totalSales, &cashCount, &cardCount, &transferCount,
 	) */
 
@@ -80,7 +80,9 @@ func (r *DashboardRepo) GetStats(ctx context.Context, startDate time.Time, endDa
 		defer rows2.Close()
 		for rows2.Next() {
 			var c model.CategoryStat
-			rows2.Scan(&c.Category, &c.Total, &c.Quantity)
+			if err := rows2.Scan(&c.Category, &c.Total, &c.Quantity); err != nil {
+				continue
+			}
 			stats.CategoryStats = append(stats.CategoryStats, c)
 		}
 	}
@@ -98,7 +100,9 @@ func (r *DashboardRepo) GetStats(ctx context.Context, startDate time.Time, endDa
 		defer rows3.Close()
 		for rows3.Next() {
 			var d model.DailySaleStat
-			rows3.Scan(&d.Date, &d.Total)
+			if err := rows3.Scan(&d.Date, &d.Total); err != nil {
+				continue
+			}
 			stats.DailySales = append(stats.DailySales, d)
 		}
 	}

@@ -7,7 +7,7 @@ import (
 
 	"core/adapter/gdrive"
 	mercadoenvios "core/adapter/mercado_envios"
-	//mysqlRepo "core/adapter/repository/mysql" 
+	//mysqlRepo "core/adapter/repository/mysql"
 	"core/adapter/repository/mysql/entity"
 	router "core/api/http"
 	"core/api/http/handle"
@@ -56,7 +56,6 @@ func main() {
 	clientActivityRepo := entity.NewClientActivityRepository(db)
 	sellerRepo := entity.NewSellerRepo(db)
 
-	
 	settingRepo := repo.NewSettingRepo(db)
 
 	// repo de favoritos
@@ -89,7 +88,6 @@ func main() {
 	// servicio de setting
 	settingService := service.NewSettingService(settingRepo)
 
-	
 	favoriteService := service.NewFavoriteService(favoriteRepo)
 
 	// Handlers (API)
@@ -101,7 +99,6 @@ func main() {
 	// nuevo handlres setting
 	settingHandler := handle.NewSettingHandler(settingService)
 
-	
 	favoriteHandler := handle.NewFavoriteHandler(favoriteService, productImageRepo)
 
 	// Facade Handler
@@ -122,7 +119,6 @@ func main() {
 	// handler guia de talles
 	sizeGuideHandler := &handle.SizeGuideHandler{DB: db}
 
-	
 	e := router.Router(
 		productHandler,
 		productImageHandler,
@@ -135,7 +131,7 @@ func main() {
 		sellerHandler,
 		settingHandler,
 		sizeGuideHandler,
-		favoriteHandler, 
+		favoriteHandler,
 		cfg,
 	)
 

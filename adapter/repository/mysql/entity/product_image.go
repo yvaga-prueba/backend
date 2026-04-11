@@ -96,7 +96,7 @@ func (r *productImageRepository) UpdateOrder(ctx context.Context, productID int6
 	query := `UPDATE product_images SET position = ?, is_primary = ? WHERE id = ? AND product_id = ?`
 	stmt, err := tx.PrepareContext(ctx, query)
 	if err != nil {
-		tx.Rollback()
+		_ = tx.Rollback() // best effort; already returning an error
 		return err
 	}
 	defer stmt.Close()
@@ -109,7 +109,7 @@ func (r *productImageRepository) UpdateOrder(ctx context.Context, productID int6
 
 		_, err = stmt.ExecContext(ctx, i, isPrimary, id, productID)
 		if err != nil {
-			tx.Rollback()
+			_ = tx.Rollback() // best effort; already returning an error
 			return err
 		}
 	}

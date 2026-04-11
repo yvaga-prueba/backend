@@ -40,8 +40,7 @@ func NewTicketHandler(ticketService service.TicketService, userRepo repo.UserRep
 // @Router       /api/tickets [post]
 func (h *TicketHandler) Create(c echo.Context) error {
 	ctx := c.Request().Context()
-	
-	
+
 	userID := getUserIDFromContext(c)
 
 	var req dto.CreateTicketRequest
@@ -53,7 +52,6 @@ func (h *TicketHandler) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto.ErrorGeneral{Message: "ticket must have at least one item"})
 	}
 
-	
 	clientName := req.ClientName
 	clientEmail := req.ClientEmail
 
@@ -64,7 +62,7 @@ func (h *TicketHandler) Create(c echo.Context) error {
 			clientEmail = user.Email
 		}
 	} else {
-		// Validamos que el invitado haya llenado los campos 
+		// Validamos que el invitado haya llenado los campos
 		if clientName == "" || clientEmail == "" {
 			return c.JSON(http.StatusBadRequest, dto.ErrorGeneral{Message: "El nombre y el correo son obligatorios para invitados"})
 		}
@@ -232,7 +230,6 @@ func (h *TicketHandler) List(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, summaries)
 
-	
 }
 
 // ListInvoices godoc

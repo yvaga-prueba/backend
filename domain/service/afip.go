@@ -46,7 +46,7 @@ func NewAfipService(ticketRepo repo.TicketRepository, cfg config.AFIPConfig) Afi
 	v := reflect.ValueOf(wsaaService).Elem()
 	f := v.FieldByName("urlWsaa")
 	if f.IsValid() {
-		ptr := unsafe.Pointer(f.UnsafeAddr())
+		ptr := unsafe.Pointer(f.UnsafeAddr()) // #nosec G103 -- required to patch unexported field in external AFIP library
 		*(*string)(ptr) = wsaaEndpoint
 	}
 
