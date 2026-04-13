@@ -24,7 +24,7 @@ func (r *CreateProductRequest) ToEntity() *model.Product {
 		Description: r.Description,
 		Stock:       r.Stock,
 		Size:        r.Size,
-		Color:       r.Color, 
+		Color:       r.Color,
 		Gender:      r.Gender,
 		Category:    r.Category,
 		UnitPrice:   r.UnitPrice,
@@ -63,10 +63,12 @@ func (r *UpdateProductRequest) ApplyToEntity(p *model.Product) {
 		p.Size = *r.Size
 	}
 	if r.Color != nil {
-		p.Color = *r.Color 
+		p.Color = *r.Color
 	}
 
-	if r.Gender != nil { p.Gender = *r.Gender }
+	if r.Gender != nil {
+		p.Gender = *r.Gender
+	}
 
 	if r.Category != nil {
 		p.Category = *r.Category
@@ -84,7 +86,7 @@ type ProductResponse struct {
 	Description string  `json:"description" example:"Remera de algodón 100% color negro, cuello redondo"`
 	Stock       int64   `json:"stock" example:"50"`
 	Size        string  `json:"size" example:"M"`
-	Color       string  `json:"color" example:"Negro"` 
+	Color       string  `json:"color" example:"Negro"`
 	Gender      string  `json:"gender" example:"Unisex"`
 	Category    string  `json:"category" example:"Remeras"`
 	UnitPrice   float64 `json:"unit_price" example:"2500.00"`
@@ -100,7 +102,7 @@ func FromEntity(p model.Product) ProductResponse {
 		Description: p.Description,
 		Stock:       p.Stock,
 		Size:        p.Size,
-		Color:       p.Color, 
+		Color:       p.Color,
 		Gender:      p.Gender,
 		Category:    p.Category,
 		UnitPrice:   p.UnitPrice,

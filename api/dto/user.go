@@ -30,7 +30,7 @@ func FromUserEntity(u model.User) UserResponse {
 		FirstName: u.FirstName,
 		LastName:  u.LastName,
 		Email:     u.Email,
-		DNI:       u.DNI,  
+		DNI:       u.DNI,
 		Phone:     u.Phone,
 		Role:      u.Role,
 		Provider:  u.Provider,
@@ -43,7 +43,7 @@ type UserResponse struct {
 	LastName  string `json:"last_name" example:"Pérez"`
 	Email     string `json:"email" example:"juan@example.com"`
 	DNI       string `json:"dni"`   // nuevos
-	Phone     string `json:"phone"` // 
+	Phone     string `json:"phone"` //
 	Provider  string `json:"provider" example:"local"`
 	Role      string `json:"role" example:"user"`
 }

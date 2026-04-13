@@ -28,15 +28,6 @@ func NewMercadoEnviosService(cfg config.MercadoPagoConfig) service.ShippingServi
 }
 
 // Estructuras de respuesta para Mercado Libre Shipment API limitadas a lo necesario
-type mlShipmentResponse struct {
-	ID           int64  `json:"id"`
-	Status       string `json:"status"`
-	Substatus    string `json:"substatus"`
-	TrackingNum  string `json:"tracking_number"`
-	TrackingHash string `json:"tracking_method"`
-	DateCreated  string `json:"date_created"`
-}
-
 type mlShipmentHistoryResponse []struct {
 	Date      string `json:"date"`
 	Status    string `json:"status"`

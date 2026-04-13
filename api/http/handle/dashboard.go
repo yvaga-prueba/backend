@@ -33,7 +33,7 @@ func (h *DashboardHandler) GetStats(c echo.Context) error {
 	}
 	if endStr != "" {
 		if t, err := time.Parse("2006-01-02", endStr); err == nil {
-			
+
 			endDate = time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.UTC)
 		}
 	}

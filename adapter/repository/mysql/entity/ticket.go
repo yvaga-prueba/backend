@@ -45,7 +45,7 @@ func (r *TicketRepo) Create(ctx context.Context, ticket *model.Ticket) error {
 		ticket.SellerName,
 		ticket.ClientName,
 		ticket.ClientEmail,
-		ticket.ClientDNI,     // <-- NUEVO: DNI agregado al insert
+		ticket.ClientDNI, // <-- NUEVO: DNI agregado al insert
 		ticket.ClientContact,
 		ticket.CouponCode,
 		paidAt,
@@ -107,20 +107,46 @@ func (r *TicketRepo) GetByID(ctx context.Context, id int64) (*model.Ticket, erro
 		return nil, err
 	}
 
-	if paidAt.Valid { ticket.PaidAt = &paidAt.Time }
-	if completedAt.Valid { ticket.CompletedAt = &completedAt.Time }
-	if cancelledAt.Valid { ticket.CancelledAt = &cancelledAt.Time }
-	if caeDueDate.Valid { ticket.CAEDueDate = &caeDueDate.Time }
-	if invType.Valid { ticket.InvoiceType = &invType.String }
-	if invNum.Valid { ticket.InvoiceNumber = &invNum.String }
-	if cae.Valid { ticket.CAE = &cae.String }
-	if tracking.Valid { ticket.TrackingNumber = &tracking.String }
+	if paidAt.Valid {
+		ticket.PaidAt = &paidAt.Time
+	}
+	if completedAt.Valid {
+		ticket.CompletedAt = &completedAt.Time
+	}
+	if cancelledAt.Valid {
+		ticket.CancelledAt = &cancelledAt.Time
+	}
+	if caeDueDate.Valid {
+		ticket.CAEDueDate = &caeDueDate.Time
+	}
+	if invType.Valid {
+		ticket.InvoiceType = &invType.String
+	}
+	if invNum.Valid {
+		ticket.InvoiceNumber = &invNum.String
+	}
+	if cae.Valid {
+		ticket.CAE = &cae.String
+	}
+	if tracking.Valid {
+		ticket.TrackingNumber = &tracking.String
+	}
 
-	if seller.Valid { ticket.SellerName = seller.String }
-	if clientName.Valid { ticket.ClientName = clientName.String }
-	if clientDNI.Valid { ticket.ClientDNI = clientDNI.String } // <-- NUEVO
-	if contact.Valid { ticket.ClientContact = contact.String }
-	if coupon.Valid { ticket.CouponCode = coupon.String }
+	if seller.Valid {
+		ticket.SellerName = seller.String
+	}
+	if clientName.Valid {
+		ticket.ClientName = clientName.String
+	}
+	if clientDNI.Valid {
+		ticket.ClientDNI = clientDNI.String
+	} // <-- NUEVO
+	if contact.Valid {
+		ticket.ClientContact = contact.String
+	}
+	if coupon.Valid {
+		ticket.CouponCode = coupon.String
+	}
 
 	return &ticket, nil
 }
@@ -171,20 +197,46 @@ func (r *TicketRepo) GetByTicketNumber(ctx context.Context, ticketNumber string)
 		return nil, err
 	}
 
-	if paidAt.Valid { ticket.PaidAt = &paidAt.Time }
-	if completedAt.Valid { ticket.CompletedAt = &completedAt.Time }
-	if cancelledAt.Valid { ticket.CancelledAt = &cancelledAt.Time }
-	if caeDueDate.Valid { ticket.CAEDueDate = &caeDueDate.Time }
-	if invType.Valid { ticket.InvoiceType = &invType.String }
-	if invNum.Valid { ticket.InvoiceNumber = &invNum.String }
-	if cae.Valid { ticket.CAE = &cae.String }
-	if tracking.Valid { ticket.TrackingNumber = &tracking.String }
+	if paidAt.Valid {
+		ticket.PaidAt = &paidAt.Time
+	}
+	if completedAt.Valid {
+		ticket.CompletedAt = &completedAt.Time
+	}
+	if cancelledAt.Valid {
+		ticket.CancelledAt = &cancelledAt.Time
+	}
+	if caeDueDate.Valid {
+		ticket.CAEDueDate = &caeDueDate.Time
+	}
+	if invType.Valid {
+		ticket.InvoiceType = &invType.String
+	}
+	if invNum.Valid {
+		ticket.InvoiceNumber = &invNum.String
+	}
+	if cae.Valid {
+		ticket.CAE = &cae.String
+	}
+	if tracking.Valid {
+		ticket.TrackingNumber = &tracking.String
+	}
 
-	if seller.Valid { ticket.SellerName = seller.String }
-	if clientName.Valid { ticket.ClientName = clientName.String }
-	if clientDNI.Valid { ticket.ClientDNI = clientDNI.String } // <-- NUEVO
-	if contact.Valid { ticket.ClientContact = contact.String }
-	if coupon.Valid { ticket.CouponCode = coupon.String }
+	if seller.Valid {
+		ticket.SellerName = seller.String
+	}
+	if clientName.Valid {
+		ticket.ClientName = clientName.String
+	}
+	if clientDNI.Valid {
+		ticket.ClientDNI = clientDNI.String
+	} // <-- NUEVO
+	if contact.Valid {
+		ticket.ClientContact = contact.String
+	}
+	if coupon.Valid {
+		ticket.CouponCode = coupon.String
+	}
 
 	return &ticket, nil
 }
@@ -334,7 +386,7 @@ func (r *TicketRepo) scanTickets(rows *sql.Rows) ([]model.Ticket, error) {
 		var ticket model.Ticket
 		var paidAt, completedAt, cancelledAt, caeDueDate sql.NullTime
 		var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon sql.NullString
-		
+
 		err := rows.Scan(
 			&ticket.ID,
 			&ticket.UserID,
@@ -367,20 +419,46 @@ func (r *TicketRepo) scanTickets(rows *sql.Rows) ([]model.Ticket, error) {
 			return nil, err
 		}
 
-		if paidAt.Valid { ticket.PaidAt = &paidAt.Time }
-		if completedAt.Valid { ticket.CompletedAt = &completedAt.Time }
-		if cancelledAt.Valid { ticket.CancelledAt = &cancelledAt.Time }
-		if caeDueDate.Valid { ticket.CAEDueDate = &caeDueDate.Time }
-		if invType.Valid { ticket.InvoiceType = &invType.String }
-		if invNum.Valid { ticket.InvoiceNumber = &invNum.String }
-		if cae.Valid { ticket.CAE = &cae.String }
-		if tracking.Valid { ticket.TrackingNumber = &tracking.String }
+		if paidAt.Valid {
+			ticket.PaidAt = &paidAt.Time
+		}
+		if completedAt.Valid {
+			ticket.CompletedAt = &completedAt.Time
+		}
+		if cancelledAt.Valid {
+			ticket.CancelledAt = &cancelledAt.Time
+		}
+		if caeDueDate.Valid {
+			ticket.CAEDueDate = &caeDueDate.Time
+		}
+		if invType.Valid {
+			ticket.InvoiceType = &invType.String
+		}
+		if invNum.Valid {
+			ticket.InvoiceNumber = &invNum.String
+		}
+		if cae.Valid {
+			ticket.CAE = &cae.String
+		}
+		if tracking.Valid {
+			ticket.TrackingNumber = &tracking.String
+		}
 
-		if seller.Valid { ticket.SellerName = seller.String }
-		if clientName.Valid { ticket.ClientName = clientName.String } 
-		if clientDNI.Valid { ticket.ClientDNI = clientDNI.String } // <-- NUEVO
-		if contact.Valid { ticket.ClientContact = contact.String }
-		if coupon.Valid { ticket.CouponCode = coupon.String }
+		if seller.Valid {
+			ticket.SellerName = seller.String
+		}
+		if clientName.Valid {
+			ticket.ClientName = clientName.String
+		}
+		if clientDNI.Valid {
+			ticket.ClientDNI = clientDNI.String
+		} // <-- NUEVO
+		if contact.Valid {
+			ticket.ClientContact = contact.String
+		}
+		if coupon.Valid {
+			ticket.CouponCode = coupon.String
+		}
 
 		tickets = append(tickets, ticket)
 	}

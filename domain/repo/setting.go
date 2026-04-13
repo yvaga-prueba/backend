@@ -29,8 +29,8 @@ func (r *settingRepo) GetSetting(ctx context.Context, key string) (string, error
 
 func (r *settingRepo) SetSetting(ctx context.Context, key string, value string) error {
 	// Esto actualiza el valor si ya existe, o lo crea si es nuevo
-	_, err := r.db.ExecContext(ctx, 
-		"INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", 
+	_, err := r.db.ExecContext(ctx,
+		"INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?",
 		key, value, value)
 	return err
 }

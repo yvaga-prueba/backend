@@ -187,6 +187,8 @@ func getBytes(key string) []byte {
 	return nil
 }
 
+var _ = getBytes // TODO: remove when needed
+
 func getInt(key string, def int) int {
 	if v := strings.TrimSpace(os.Getenv(key)); v != "" {
 		if n, err := strconv.Atoi(v); err == nil {

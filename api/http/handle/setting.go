@@ -32,7 +32,7 @@ func (h *SettingHandler) SetMonthlyGoal(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Petición inválida"})
 	}
-	
+
 	err := h.svc.SetMonthlyGoal(c.Request().Context(), req.Goal)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})

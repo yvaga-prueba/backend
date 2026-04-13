@@ -74,7 +74,6 @@ func (s *productServiceImpl) GetRelated(ctx context.Context, category string, ex
 	return s.repo.GetRelated(ctx, category, excludeID, limit)
 }
 
-
 type ProductService interface {
 	Create(ctx context.Context, p *model.Product) (*model.Product, error)
 	GetByID(ctx context.Context, id int64) (*model.Product, error)

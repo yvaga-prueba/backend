@@ -97,16 +97,16 @@ func GetUserIDFromContext(c echo.Context) int64 {
 	if userID == nil {
 		return 0
 	}
-	
+
 	// Si el middleware lo guardó como int64
 	if id, ok := userID.(int64); ok {
 		return id
 	}
-	
+
 	// Si viene directamente de claims suele ser float64
 	if id, ok := userID.(float64); ok {
 		return int64(id)
 	}
-	
+
 	return 0
 }

@@ -15,9 +15,6 @@ type Seller struct {
 	UpdatedAt          time.Time `json:"updated_at"`
 }
 
-
 func (s *Seller) GetFullName() string {
 	return s.FirstName + " " + s.LastName
 }
-
-

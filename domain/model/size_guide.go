@@ -13,7 +13,7 @@ type SizeGuide struct {
 	ChestCm   float64   `json:"chest_cm"` // guia de talles
 	WaistCm   float64   `json:"waist_cm"`
 	HipCm     float64   `json:"hip_cm"`
-	LengthCm  float64   `json:"length_cm"`// guia de talles 
+	LengthCm  float64   `json:"length_cm"` // guia de talles
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }

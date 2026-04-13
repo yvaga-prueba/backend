@@ -334,7 +334,7 @@ func (h *ProductHandler) GetRelated(c echo.Context) error {
 
 	excludeID, _ := strconv.ParseInt(excludeIDStr, 10, 64)
 	limit, _ := strconv.Atoi(limitStr)
-	
+
 	// Si no mandan un límite desde Angular, forzamos 4 por defecto para cuidar el diseño
 	if limit <= 0 {
 		limit = 4

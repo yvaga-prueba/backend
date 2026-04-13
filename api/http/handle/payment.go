@@ -76,11 +76,11 @@ type CreatePreferenceRequest struct {
 	Items         []dto.TicketItemRequest `json:"items"`
 	PaymentMethod string                  `json:"payment_method"` // "card" | "transfer" | "cash"
 	Notes         string                  `json:"notes,omitempty"`
-	ClientName    string                  `json:"client_name"`  
+	ClientName    string                  `json:"client_name"`
 	ClientEmail   string                  `json:"client_email"`
-	CouponCode    string                  `json:"coupon_code,omitempty"` 
-	ClientDNI     string                  `json:"client_dni"`     // 
-	ClientContact string                  `json:"client_contact"` // 
+	CouponCode    string                  `json:"coupon_code,omitempty"`
+	ClientDNI     string                  `json:"client_dni"`     //
+	ClientContact string                  `json:"client_contact"` //
 }
 
 type CreatePreferenceResponse struct {
@@ -163,7 +163,7 @@ func mapPaymentMethod(frontendMethod string) (model.PaymentMethod, error) {
 	}
 }
 
-//  AGREGAMOS clientDNI y clientContact a la firma
+// AGREGAMOS clientDNI y clientContact a la firma
 func (h *PaymentHandler) handleCardPayment(
 	c echo.Context, ctx context.Context,
 	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string,
@@ -227,7 +227,7 @@ func (h *PaymentHandler) handleCardPayment(
 				{ID: "atm"},
 				{ID: "crypto"},
 			},
-			Installments:        12, 
+			Installments:        12,
 			DefaultInstallments: 1,
 		},
 		ExternalRef:      fmt.Sprintf("ticket-%d", ticket.ID),
@@ -247,7 +247,7 @@ func (h *PaymentHandler) handleCardPayment(
 	})
 }
 
-//  agreagmos dni y contacto a la firma
+// agreagmos dni y contacto a la firma
 func (h *PaymentHandler) handleTransferPayment(
 	c echo.Context, ctx context.Context,
 	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string,
@@ -308,7 +308,7 @@ func (h *PaymentHandler) handleTransferPayment(
 			ExcludedPaymentTypes: []mpType{
 				{ID: "credit_card"},
 				{ID: "debit_card"},
-				{ID: "ticket"}, 
+				{ID: "ticket"},
 				{ID: "atm"},
 				{ID: "digital_currency"},
 				{ID: "digital_wallet"},
@@ -333,7 +333,7 @@ func (h *PaymentHandler) handleTransferPayment(
 	})
 }
 
-// agregamos dni y contacto a la firma   
+// agregamos dni y contacto a la firma
 func (h *PaymentHandler) handleCashPayment(
 	c echo.Context, ctx context.Context,
 	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string,
@@ -379,7 +379,7 @@ func (h *PaymentHandler) createMPPreference(req mpPreferenceRequest) (string, er
 
 	if resp.StatusCode >= 400 {
 		var mpErr map[string]interface{}
-		json.NewDecoder(resp.Body).Decode(&mpErr)
+		_ = json.NewDecoder(resp.Body).Decode(&mpErr) // #nosec G104 -- best-effort decode inside error path
 		return "", fmt.Errorf("MercadoPago respondió %d: %v", resp.StatusCode, mpErr)
 	}
 

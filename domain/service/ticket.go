@@ -88,7 +88,7 @@ func (s *ticketServiceImpl) CreateTicket(
 	couponCode string,
 	clientName string,
 	clientEmail string,
-	clientDNI string,     // NUEVO
+	clientDNI string, // NUEVO
 	clientContact string, // NUEVO
 ) (*model.Ticket, []model.TicketLine, error) {
 	if len(items) == 0 {
@@ -245,7 +245,7 @@ func (s *ticketServiceImpl) CreateTicket(
 			}
 
 			if needsUpdate {
-				
+
 				_ = s.userRepo.Update(ctx, &user)
 			}
 		}

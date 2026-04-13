@@ -230,7 +230,7 @@ func migrateUp(db *sql.DB) error {
 			// Validar checksum
 			if appliedChecksum != m.checksum {
 				return fmt.Errorf(
-					"❌ CHECKSUM MISMATCH for %s\nApplied: %s\nCurrent: %s\nMigration file was modified after being applied!",
+					"CHECKSUM MISMATCH for %s\nApplied: %s\nCurrent: %s\nMigration file was modified after being applied",
 					m.version, appliedChecksum, m.checksum,
 				)
 			}
@@ -306,7 +306,7 @@ func loadMigrations(dir string, suffix string) ([]migration, error) {
 
 	var migrations []migration
 	for _, path := range files {
-		content, err := os.ReadFile(path)
+		content, err := os.ReadFile(path) // #nosec G304 -- paths come from the internal migrations directory, not user input
 		if err != nil {
 			return nil, fmt.Errorf("read %s: %w", path, err)
 		}

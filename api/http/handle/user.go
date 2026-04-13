@@ -316,11 +316,10 @@ func (h *AuthHandler) ChangePassword(c echo.Context) error {
 
 	// 6. Actualizar y guardar en la base de datos
 	foundUser.Password = string(hashedPassword)
-	
-	
+
 	if err := h.userRepo.UpdatePassword(ctx, userID, string(hashedPassword)); err != nil {
-	return c.JSON(http.StatusInternalServerError, dto.ErrorGeneral{Message: "error saving new password"})
-}
+		return c.JSON(http.StatusInternalServerError, dto.ErrorGeneral{Message: "error saving new password"})
+	}
 
 	// 7. Responder OK a Angular
 	return c.JSON(http.StatusOK, map[string]string{"message": "Contraseña actualizada con éxito"})

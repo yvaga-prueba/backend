@@ -4,16 +4,16 @@ import "time"
 
 // TicketLine represents a line item in a ticket
 type TicketLine struct {
-	ID           int64     `json:"id"`
-	TicketID     int64     `json:"ticket_id"`
-	ProductID    int64     `json:"product_id"`
-	ProductTitle string    `json:"product_title"` // Snapshot at time of sale
-	ProductCategory string `json:"product_category"`
-	ProductSize  string    `json:"product_size"`  // Snapshot at time of sale
-	Quantity     int       `json:"quantity"`
-	UnitPrice    float64   `json:"unit_price"` // Snapshot at time of sale
-	Subtotal     float64   `json:"subtotal"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID              int64     `json:"id"`
+	TicketID        int64     `json:"ticket_id"`
+	ProductID       int64     `json:"product_id"`
+	ProductTitle    string    `json:"product_title"` // Snapshot at time of sale
+	ProductCategory string    `json:"product_category"`
+	ProductSize     string    `json:"product_size"` // Snapshot at time of sale
+	Quantity        int       `json:"quantity"`
+	UnitPrice       float64   `json:"unit_price"` // Snapshot at time of sale
+	Subtotal        float64   `json:"subtotal"`
+	CreatedAt       time.Time `json:"created_at"`
 }
 
 // CalculateSubtotal computes the subtotal for this line
