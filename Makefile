@@ -1,4 +1,4 @@
-.PHONY: help run build test clean swagger migrate-up migrate-down migrate-status migrate-new tree
+.PHONY: help run build test fmt lint sec check tidy clean swagger migrate-up migrate-down migrate-status migrate-new tree consolidate
 
 # Detectar sistema operativo
 ifeq ($(OS),Windows_NT)
@@ -17,9 +17,14 @@ BIN_DIR := bin
 
 help: ## Mostrar ayuda
 	@echo "Comandos disponibles:"
-	@echo "  make run              - Ejecutar la API en modo desarrollo"
-	@echo "  make build            - Compilar binarios"
-	@echo "  make test             - Ejecutar tests"
+	@echo "  make run              - Ejecutar la API en modo desarrollo (requiere air)"
+	@echo "  make build            - Compilar binarios en bin/"
+	@echo "  make test             - Ejecutar tests con cobertura"
+	@echo "  make fmt              - Verificar formato (go fmt)"
+	@echo "  make lint             - Ejecutar go vet + staticcheck"
+	@echo "  make sec              - Ejecutar análisis de seguridad (gosec)"
+	@echo "  make check            - fmt + lint + sec + test (pre-push)"
+	@echo "  make tidy             - Limpiar y verificar go.mod"
 	@echo "  make swagger          - Generar documentación Swagger"
 	@echo "  make migrate-up       - Aplicar migraciones pendientes"
 	@echo "  make migrate-down     - Revertir última migración"
@@ -34,15 +39,63 @@ run:
 
 build:
 	@echo "Building binarios..."
+	@mkdir -p $(BIN_DIR)
+	go build -ldflags="-w -s" -o $(BIN_DIR)/api ./cmd/api
+	go build -ldflags="-w -s" -o $(BIN_DIR)/migrate ./cmd/migrate
 	@echo "Build complete: $(BIN_DIR)/"
 
 test:
 	@echo "Running tests..."
+	go test ./... -cover -coverprofile=coverage.out
+	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report: coverage.html"
+
+fmt:
+	@echo "Checking format..."
+ifeq ($(DETECTED_OS),Windows)
+	@powershell -Command "$$out = (go fmt ./...); if ($$out) { Write-Host 'ERROR: archivos sin formatear:'; Write-Host $$out; exit 1 }"
+else
+	@test -z "$$(go fmt ./...)" || (echo "ERROR: archivos sin formatear, ejecuta 'go fmt ./...'" && exit 1)
+endif
+	@echo "Format OK"
+
+lint:
+	@echo "Running go vet..."
+	go vet ./...
+	@echo "Running staticcheck..."
+ifeq ($(DETECTED_OS),Windows)
+	@where staticcheck >NUL 2>&1 || go install honnef.co/go/tools/cmd/staticcheck@latest
+else
+	@which staticcheck > /dev/null 2>&1 || go install honnef.co/go/tools/cmd/staticcheck@latest
+endif
+	staticcheck ./...
+	@echo "Lint OK"
+
+sec:
+	@echo "Running gosec..."
+ifeq ($(DETECTED_OS),Windows)
+	@where gosec >NUL 2>&1 || go install github.com/securego/gosec/v2/cmd/gosec@latest
+else
+	@which gosec > /dev/null 2>&1 || go install github.com/securego/gosec/v2/cmd/gosec@latest
+endif
+	gosec ./...
+	@echo "Security OK"
+
+check: fmt lint sec test
+	@echo "All checks passed. Listo para subir."
+
+tidy:
+	go mod tidy
+	go mod verify
 
 swagger:
 	@echo "Generating Swagger documentation..."
+ifeq ($(DETECTED_OS),Windows)
 	@powershell -ExecutionPolicy Bypass -File create_swag_docs.ps1
+else
+	@chmod +x create_swag_docs.sh
+	@./create_swag_docs.sh
+endif
 	@echo "Swagger documentation ready at /swagger/index.html"
 
 migrate-up:
@@ -94,6 +147,7 @@ consolidate:
 
 clean:
 	@echo "Cleaning..."
+	@rm -rf $(BIN_DIR) coverage.out coverage.html
 	@echo "Clean complete"
 
 .DEFAULT_GOAL := help

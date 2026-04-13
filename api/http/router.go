@@ -37,6 +37,9 @@ func Router(
 	e.Use(middleware.BodyLimit("50M"))
 
 	// Swagger
+	e.GET("/swagger", func(c echo.Context) error {
+		return c.Redirect(301, "/swagger/index.html")
+	})
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// Health check
