@@ -3,6 +3,7 @@ package router
 import (
 	"core/api/http/handle"
 	"core/config"
+	docs "core/docs"
 	"core/pkg/jwtutil"
 
 	"github.com/labstack/echo/v4"
@@ -36,8 +37,15 @@ func Router(
 	e.Static("/static", "static")
 	e.Use(middleware.BodyLimit("50M"))
 
-	// Swagger
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	// Swagger — host se resuelve dinámicamente del request para funcionar en K8s
+	e.GET("/swagger", func(c echo.Context) error {
+		return c.Redirect(301, "/swagger/index.html")
+	})
+	e.GET("/swagger/*", func(c echo.Context) error {
+		docs.SwaggerInfo.Host = c.Request().Host
+		docs.SwaggerInfo.Schemes = []string{c.Scheme()}
+		return echoSwagger.WrapHandler(c)
+	})
 
 	// Health check
 	e.GET("/healthz", func(c echo.Context) error {
