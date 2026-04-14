@@ -25,9 +25,9 @@ var _ repo.ProductRepository = (*ProductRepo)(nil)
 func (r *ProductRepo) Create(ctx context.Context, p *model.Product) error {
 
 	res, err := r.DB.ExecContext(ctx, `
-		INSERT INTO products (bar_code, title, description, stock, size, color, gender, category, unit_price)
-		VALUES (?,?,?,?,?,?,?,?,?)`,
-		p.BarCode, p.Title, p.Description, p.Stock, p.Size, p.Color, p.Gender, p.Category, p.UnitPrice,
+		INSERT INTO products (bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price)
+		VALUES (?,?,?,?,?,?,?,?,?,?)`,
+		p.BarCode, p.Title, p.Description, p.Stock, p.Size, p.Color, p.Gender, p.FitType, p.Category, p.UnitPrice,
 	)
 	if err != nil {
 		var me *mysqlerr.MySQLError
@@ -44,8 +44,8 @@ func (r *ProductRepo) Create(ctx context.Context, p *model.Product) error {
 }
 
 func (r *ProductRepo) Read(ctx context.Context) ([]model.Product, error) {
-
-	q := `SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at 
+	
+	q := `SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at 
 		FROM products`
 
 	rows, err := r.DB.QueryContext(ctx, q)
@@ -58,7 +58,7 @@ func (r *ProductRepo) Read(ctx context.Context) ([]model.Product, error) {
 
 	for rows.Next() {
 		var p model.Product
-		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.FitType, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
 			return nil, err
 		}
 		out = append(out, p)
@@ -70,7 +70,7 @@ func (r *ProductRepo) Update(ctx context.Context, product *model.Product) error 
 
 	query := `
 		UPDATE products
-		SET bar_code = ?, title = ?, description = ?, stock = ?, size = ?, color = ?, gender = ?, category = ?, unit_price = ?, updated_at = NOW()
+		SET bar_code = ?, title = ?, description = ?, stock = ?, size = ?, color = ?, gender = ?, fit_type = ?, category = ?, unit_price = ?, updated_at = NOW()
 		WHERE id = ?
 	`
 	result, err := r.DB.ExecContext(ctx, query,
@@ -81,6 +81,7 @@ func (r *ProductRepo) Update(ctx context.Context, product *model.Product) error 
 		product.Size,
 		product.Color,
 		product.Gender,
+		product.FitType,
 		product.Category,
 		product.UnitPrice,
 		product.ID,
@@ -126,10 +127,10 @@ func (r *ProductRepo) GetByID(ctx context.Context, id int64) (*model.Product, er
 	var p model.Product
 	// Busco un producto específico. Uso QueryRowContext porque sé que a lo sumo me tiene que devolver una sola fila.
 	err := r.DB.QueryRowContext(ctx, `
-		SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at
+		SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at
 		FROM products WHERE id = ?`, id).
-		Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt)
-
+		Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.FitType, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt)
+	
 	// Si MySQL me dice que no hay resultados, devuelvo mi error personalizado para manejarlo limpio en el frontend
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, errorcode.ErrNotFound
@@ -140,8 +141,8 @@ func (r *ProductRepo) GetByID(ctx context.Context, id int64) (*model.Product, er
 func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.Product, error) {
 
 	q := `
-		SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at
-		FROM products WHERE 1=1` // El 1=1 es un truco para poder concatenar los "AND" sin romper la sintaxis
+		SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at
+		FROM products WHERE 1=1` 
 	args := []any{}
 
 	// Voy chequeando qué filtros me pasaron y los agrego a la consulta
@@ -189,7 +190,7 @@ func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.
 	var out []model.Product
 	for rows.Next() {
 		var p model.Product
-		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.FitType, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
 			return nil, err
 		}
 		out = append(out, p)
@@ -212,7 +213,7 @@ func (r *ProductRepo) UpdateStock(ctx context.Context, id int64, delta int64) er
 
 func (r *ProductRepo) GetVariantsByTitle(ctx context.Context, title string) ([]model.Product, error) {
 	// Agrupo los productos que son el mismo modelo pero tienen distintos talles o colores
-	q := `SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at 
+	q := `SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at 
 		FROM products WHERE title = ? ORDER BY id ASC`
 
 	rows, err := r.DB.QueryContext(ctx, q, title)
@@ -224,7 +225,7 @@ func (r *ProductRepo) GetVariantsByTitle(ctx context.Context, title string) ([]m
 	var out []model.Product
 	for rows.Next() {
 		var p model.Product
-		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.FitType, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
 			return nil, err
 		}
 		out = append(out, p)
@@ -246,10 +247,10 @@ func (r *ProductRepo) GetRelated(ctx context.Context, category string, excludeID
 
 	// Traemos prendas de la misma categoría, pero acá solo filtramos por ID.
 	// El filtro del titulo lo hacemos abajo ya con los textos limpios.
-	q := `SELECT id, bar_code, title, description, stock, size, color, gender, category, unit_price, updated_at, created_at 
-	      FROM products 
-	      WHERE category = ? AND id != ? 
-	      ORDER BY created_at DESC`
+	q := `SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at 
+		  FROM products 
+		  WHERE category = ? AND id != ? 
+		  ORDER BY created_at DESC`
 
 	rows, err := r.DB.QueryContext(ctx, q, category, excludeID)
 	if err != nil {
@@ -264,7 +265,7 @@ func (r *ProductRepo) GetRelated(ctx context.Context, category string, excludeID
 
 	for rows.Next() {
 		var p model.Product
-		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
+		if err := rows.Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.FitType, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt); err != nil {
 			return nil, err
 		}
 

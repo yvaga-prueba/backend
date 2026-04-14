@@ -12,4 +12,5 @@ type ProductImageRepository interface {
 	Delete(ctx context.Context, id int64) error
 	DeleteByDriveFileID(ctx context.Context, driveFileID string) error
 	UpdateOrder(ctx context.Context, productID int64, imageIDs []int64) error
+	GetPrimaryImagesBatch(ctx context.Context, productIDs []int64) (map[int64]string, error)
 }

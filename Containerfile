@@ -30,3 +30,4 @@ EXPOSE 8080
 USER nobody
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
+

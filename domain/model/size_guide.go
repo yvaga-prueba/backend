@@ -10,10 +10,11 @@ type SizeGuide struct {
 	MaxWeight float64   `json:"max_weight" db:"max_weight"`
 	MinHeight float64   `json:"min_height" db:"min_height"`
 	MaxHeight float64   `json:"max_height" db:"max_height"`
-	ChestCm   float64   `json:"chest_cm"` // guia de talles
-	WaistCm   float64   `json:"waist_cm"`
-	HipCm     float64   `json:"hip_cm"`
-	LengthCm  float64   `json:"length_cm"` // guia de talles
+	FitType   string    `json:"fit_type" db:"fit_type"`
+	ChestCm   float64   `json:"chest_cm" db:"chest_cm"`
+	WaistCm   float64   `json:"waist_cm" db:"waist_cm"`
+	HipCm     float64   `json:"hip_cm" db:"hip_cm"`
+	LengthCm  float64   `json:"length_cm" db:"length_cm"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }

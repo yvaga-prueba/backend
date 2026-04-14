@@ -3,6 +3,8 @@ package entity
 import (
 	"context"
 	"database/sql"
+	"fmt"        
+    "strings"
 
 	"core/domain/model"
 	"core/domain/repo"
@@ -119,4 +121,51 @@ func (r *productImageRepository) UpdateOrder(ctx context.Context, productID int6
 	}
 
 	return nil
+}
+
+func (r *productImageRepository) GetPrimaryImagesBatch(ctx context.Context, productIDs []int64) (map[int64]string, error) {
+	if len(productIDs) == 0 {
+		return make(map[int64]string), nil
+	}
+
+	// Armamos los signos de interrogación (?, ?, ?) según la cantidad de productos
+	placeholders := make([]string, len(productIDs))
+	args := make([]interface{}, len(productIDs))
+	for i, id := range productIDs {
+		placeholders[i] = "?"
+		args[i] = id
+	}
+
+	// Pedimos TODAS las fotos de esos 50 productos en 1 sola consulta veloz
+	query := fmt.Sprintf(`
+		SELECT product_id, url, is_primary 
+		FROM product_images 
+		WHERE product_id IN (%s)
+		ORDER BY position ASC, id ASC
+	`, strings.Join(placeholders, ","))
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Armamos un diccionario (map) que conecte [ID_PRODUCTO] -> "URL_FOTO"
+	result := make(map[int64]string)
+	
+	for rows.Next() {
+		var productID int64
+		var url string
+		var isPrimary bool
+		if err := rows.Scan(&productID, &url, &isPrimary); err != nil {
+			return nil, err
+		}
+
+		// Si es la imagen primaria, la guardamos definitivamente.
+		
+		if _, exists := result[productID]; !exists || isPrimary {
+			result[productID] = url
+		}
+	}
+	return result, rows.Err()
 }
