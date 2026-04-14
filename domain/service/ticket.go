@@ -72,7 +72,7 @@ func NewTicketService(
 		productRepo:    productRepo,
 		afipService:    afipService,
 		sellerRepo:     sellerRepo,
-		userRepo:       userRepo, // NUEVO
+		userRepo:       userRepo, 
 	}
 }
 

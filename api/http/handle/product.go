@@ -47,25 +47,30 @@ func (h *ProductHandler) List(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "internal error"})
 	}
 
+	
+
+	// extrae todos los id
+	var productIDs []int64
+	for _, p := range ps {
+		productIDs = append(productIDs, p.ID)
+	}
+
+	// Buscamos todas las fotos principales en 1 solo viaje a la base de datos
+	imagesMap := make(map[int64]string)
+	if h.ImageRepo != nil && len(productIDs) > 0 {
+		if batchImages, err := h.ImageRepo.GetPrimaryImagesBatch(c.Request().Context(), productIDs); err == nil {
+			imagesMap = batchImages
+		}
+	}
+
+	// 3. Armamos la respuesta uniendo cada producto con su foto
 	var productResponses []dto.ProductResponse
 	for _, p := range ps {
-		imageURL := ""
-		if h.ImageRepo != nil {
-			if imgs, err := h.ImageRepo.FindByProductID(c.Request().Context(), p.ID); err == nil {
-				for _, img := range imgs {
-					if img.IsPrimary {
-						imageURL = img.URL
-						break
-					}
-				}
-				// Si ninguna es primaria, usar la primera
-				if imageURL == "" && len(imgs) > 0 {
-					imageURL = imgs[0].URL
-				}
-			}
-		}
+		imageURL := imagesMap[p.ID] // Busca en el mapa. Si no tiene foto, devuelve "" automáticamente
 		productResponses = append(productResponses, dto.FromEntityWithImage(p, imageURL))
 	}
+
+	
 
 	response := map[string]interface{}{
 		"products":    productResponses,
