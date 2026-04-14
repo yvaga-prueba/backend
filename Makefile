@@ -31,6 +31,7 @@ help: ## Mostrar ayuda
 	@echo "  make migrate-status   - Ver estado de migraciones"
 	@echo "  make migrate-new      - Crear nueva migración (name=nombre)"
 	@echo "  make tree             - Mostrar estructura del proyecto"
+	@echo "  make gdrive-auth      - Obtener nuevo Refresh Token para Google Drive"
 	@echo "  make clean            - Limpiar archivos generados"
 
 run:
@@ -130,9 +131,9 @@ ifeq ($(DETECTED_OS),Windows)
 else
 	@timestamp=$$(date +%Y%m%d%H%M%S); \
 	version="$${timestamp}_$(name)"; \
-	upfile="cmd/migrate/migrations/$${version}.up.sql"; \
-	downfile="cmd/migrate/migrations/$${version}.down.sql"; \
-	mkdir -p cmd/migrate/migrations; \
+	upfile="migrations/$${version}.up.sql"; \
+	downfile="migrations/$${version}.down.sql"; \
+	mkdir -p migrations; \
 	touch "$$upfile" "$$downfile"; \
 	echo "Created migration files:"; \
 	echo "  $$upfile"; \
@@ -141,6 +142,9 @@ endif
 
 tree:
 	@go run ./internal/pkg/tree.go
+
+gdrive-auth: ## Ejecutar asistente de autenticación para Google Drive
+	@go run ./cmd/gdrive_auth/main.go
 
 consolidate:
 	@go run ./internal/pkg/consolidate.go

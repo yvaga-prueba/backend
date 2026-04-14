@@ -22,6 +22,10 @@ type CreateTicketRequest struct {
 	ClientEmail   string              `json:"client_email"`
 	ClientDNI     string              `json:"client_dni"` //
 	ClientContact string              `json:"client_contact"`
+	ShippingAddress string           `json:"shipping_address"`
+	ShippingZipCode string           `json:"shipping_zip_code"`
+	ShippingPhone   string           `json:"shipping_phone"`
+	ShippingMessage string           `json:"shipping_message"`
 }
 
 // TicketLineResponse represents a ticket line item in responses
@@ -58,6 +62,10 @@ type TicketResponse struct {
 	CAE            *string              `json:"cae,omitempty"`
 	CAEDueDate     *time.Time           `json:"cae_due_date,omitempty"`
 	TrackingNumber *string              `json:"tracking_number,omitempty"`
+	ShippingAddress string              `json:"shipping_address,omitempty"`
+	ShippingZipCode string              `json:"shipping_zip_code,omitempty"`
+	ShippingPhone   string              `json:"shipping_phone,omitempty"`
+	ShippingMessage string              `json:"shipping_message,omitempty"`
 	Lines          []TicketLineResponse `json:"lines"`
 	PaidAt         *time.Time           `json:"paid_at,omitempty"`
 	CompletedAt    *time.Time           `json:"completed_at,omitempty"`
@@ -87,6 +95,10 @@ type TicketSummaryResponse struct {
 	CAE            *string              `json:"cae,omitempty"`
 	CAEDueDate     *time.Time           `json:"cae_due_date,omitempty"`
 	TrackingNumber *string              `json:"tracking_number,omitempty"`
+	ShippingAddress string              `json:"shipping_address,omitempty"`
+	ShippingZipCode string              `json:"shipping_zip_code,omitempty"`
+	ShippingPhone   string              `json:"shipping_phone,omitempty"`
+	ShippingMessage string              `json:"shipping_message,omitempty"`
 	CreatedAt      time.Time            `json:"created_at"`
 }
 
@@ -153,6 +165,10 @@ func FromTicket(ticket model.Ticket, lines []model.TicketLine) TicketResponse {
 		CAE:            ticket.CAE,
 		CAEDueDate:     ticket.CAEDueDate,
 		TrackingNumber: ticket.TrackingNumber,
+		ShippingAddress: ticket.ShippingAddress,
+		ShippingZipCode: ticket.ShippingZipCode,
+		ShippingPhone:   ticket.ShippingPhone,
+		ShippingMessage: ticket.ShippingMessage,
 		Lines:          lineResponses,
 		PaidAt:         ticket.PaidAt,
 		CompletedAt:    ticket.CompletedAt,
@@ -192,6 +208,10 @@ func FromTicketSummary(ticket model.Ticket, lines []model.TicketLine) TicketSumm
 		CAE:            ticket.CAE,
 		CAEDueDate:     ticket.CAEDueDate,
 		TrackingNumber: ticket.TrackingNumber,
+		ShippingAddress: ticket.ShippingAddress,
+		ShippingZipCode: ticket.ShippingZipCode,
+		ShippingPhone:   ticket.ShippingPhone,
+		ShippingMessage: ticket.ShippingMessage,
 		CreatedAt:      ticket.CreatedAt,
 	}
 }

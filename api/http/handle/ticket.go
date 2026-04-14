@@ -73,8 +73,8 @@ func (h *TicketHandler) Create(c echo.Context) error {
 		items[i] = service.TicketItemRequest{ProductID: item.ProductID, Quantity: item.Quantity}
 	}
 
-	// 3. Creamos el ticket con los datos agregados de dni y contacto
-	ticket, lines, err := h.ticketService.CreateTicket(ctx, userID, items, req.PaymentMethod, req.Notes, model.TicketStatusPaid, req.CouponCode, clientName, clientEmail, req.ClientDNI, req.ClientContact)
+	// 3. Creamos el ticket con los datos agregados de dni, contacto y envío
+	ticket, lines, err := h.ticketService.CreateTicket(ctx, userID, items, req.PaymentMethod, req.Notes, model.TicketStatusPaid, req.CouponCode, clientName, clientEmail, req.ClientDNI, req.ClientContact, req.ShippingAddress, req.ShippingZipCode, req.ShippingPhone, req.ShippingMessage)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorGeneral{Message: err.Error()})
 	}
