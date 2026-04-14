@@ -162,12 +162,9 @@ func (r *productImageRepository) GetPrimaryImagesBatch(ctx context.Context, prod
 		}
 
 		// Si es la imagen primaria, la guardamos definitivamente.
-		// Si no, guardamos la primera que encontremos por si no hay primaria (tu fallback original).
-		if currentURL, exists := result[productID]; !exists || isPrimary {
-			// Solo pisamos si es primaria o si todavía no teníamos ninguna foto guardada para este ID
-			if !exists || isPrimary {
-				result[productID] = url
-			}
+		
+		if _, exists := result[productID]; !exists || isPrimary {
+			result[productID] = url
 		}
 	}
 	return result, rows.Err()
