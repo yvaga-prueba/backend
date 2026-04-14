@@ -1,0 +1,168 @@
+# Default values for twist.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: docker.io/yvaga
+  name_app: backend
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+  containerPort: 8080
+  livenessProbe: /healthz
+  readinessProbe: /healthz
+
+configMap:
+  MP_SUCCESS_URL: http://localhost:4200/cart/success
+  MP_FAILURE_URL: http://localhost:4200/cart/failure
+  MP_PENDING_URL: http://localhost:4200/cart/pending
+  SERVER_ADDRESS: :8080
+  FRONTEND_URL: http://localhost:4200
+  DATABASE_HOST: mariadb-host
+  DATABASE_PORT: 3306
+  DATABASE_USER: usr_yvaga_t
+  DATABASE_NAME: core_t
+  AFIP_ENABLED: true
+  AFIP_ENVIRONMENT: testing
+  AFIP_CUIT: 20335645856
+  GDRIVE_FOLDER_ID: 1z5vxKFerdq2tngrqJyImrUy-VFpHX-hD
+  GDRIVE_CLIENT_ID: 164021320433-l4fg2b5lgmopdk8iv0cn0gojl5cc6gip.apps.googleusercontent.com
+
+secret:
+  # MP_ACCESS_TOKEN: 
+  JWT_SECRET: bGFyZXB1dGFtYWRyZWNvbmVzdGVqd3RzZWNyZXQ=
+  DATABASE_PASS: VHVQYXNzd29yZFNlZ3VybzEyMyE=
+  AFIP_CERT_TOKEN: |
+    LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSekNDQWkrZ0F3SUJBZ0lJSGdsK3dmSGM2
+    SUV3RFFZSktvWklodmNOQVFFTkJRQXdPREVhTUJnR0ExVUVBd3dSUTI5dGNIVjAKWVdSdmNtVnpJ
+    RlJsYzNReERUQUxCZ05WQkFvTUJFRkdTVkF4Q3pBSkJnTlZCQVlUQWtGU01CNFhEVEkyTURNd05E
+    SXhNRFUxTkZvWApEVEk0TURNd016SXhNRFUxTkZvd0xURVFNQTRHQTFVRUF3d0hlWFpoWjJGeFlU
+    RVpNQmNHQTFVRUJSTVFRMVZKVkNBeU1ETXpOVFkwCk5UZzFOakNDQVNJd0RRWUpLb1pJaHZjTkFR
+    RUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFObTI4STN1K3U0Nmh6L1NwWmJjUHZqTVNudVIKTmthRGdh
+    c00yN2JDMlp5SHRObllmL1JJSDVlaXdzMmQzRzdOZVVSa0N4cUhubXArS0N0YzFGSEtvNVZZN1Bj
+    ekdnRjJHeEkwUHNmWgpWWitvQ3pBOUFmWWh5L1BscVNEYUxHay9KUnBOQ2x1TVBTUmp2WVl1Zkll
+    SlNDRVdFMUduRi82Wmd1ejhUNkludTRHRjh3bjI1VVUwCjBLRkFSNzBmT0NJWGJTTzRUVG5zWWJy
+    VFZvR0Y5Z3pQQ1FyQXhsU3U2VGZmV3FmU0VQWjhzWmZxWWpMSnV2dk1QWE5vb3VFYnZtclUKcXRD
+    SFM3ZVZjQXpYenNHSUxRYW5NdGNaZkNDd2oyN1JtZTgyT3l1Vk1EZTlhbjUvNmFSWWQ1WGY5L25T
+    REJ5SVYxOEZKVytKMTZpNwp6T0JLMmdEVlZTMENBd0VBQWFOZ01GNHdEQVlEVlIwVEFRSC9CQUl3
+    QURBZkJnTlZIU01FR0RBV2dCU3pzdFAvL2VtNjN0Nk5yeEVoCm5OWWdmZkpQYnpBZEJnTlZIUTRF
+    RmdRVTdOYjRwSVRkUkQwV1doRDZySGM2N3dZdEp1QXdEZ1lEVlIwUEFRSC9CQVFEQWdYZ01BMEcK
+    Q1NxR1NJYjNEUUVCRFFVQUE0SUJBUUErYU51MG5uYi92UUxmNGU1Z0tLQWs5VVpiUFFlRk9HL2VP
+    L0RVdzFGYmFnNjNEVnpDQVY2cAphSjBqa0VEWjREdHM4SVhvdEpSUlE1MW9qQUVyL2RvUVB2a0c0
+    Z0VmQlNWMGxKcFkzNHlqdmJNL3ZOcE9BRHVqcVprQVZUbGdZQXR2ClFJWGV2RUhtNGpQM1hXaWVY
+    WHlUMUtKS3VzUFd2WVhld1Q1bzhLQ0YzOFRkNVlraDZ3blBSRURVcW1PTVc1bzZweDRKY1pEVE5I
+    T3QKYytDN2Q0NnQ0WXl3MEdLbERxMFNjaDNLZDF6SHB1QkFPelREV0J5eUtrWnZmN1FMQ3pwRWlB
+    VDE3NjQrbk5LOGY3eHdQREVYMWVYRAo2K3dqVUUxeUZSL0kwdXN2a2l6UkJ3UlI5bk40MmFIeTNT
+    T3ROUFVHcEVWZGR6UVVUZGxGV0xHN25vQVAKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==
+  AFIP_KEY_TOKEN: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZB
+    QVNDQktjd2dnU2pBZ0VBQW9JQkFRRFp0dkNON3ZydU9vYy8KMHFXVzNENzR6RXA3a1RaR2c0R3JE
+    TnUyd3RtY2g3VFoySC8wU0IrWG9zTE5uZHh1elhsRVpBc2FoNTVxZmlncgpYTlJSeXFPVldPejNN
+    eG9CZGhzU05EN0gyVldmcUFzd1BRSDJJY3Z6NWFrZzJpeHBQeVVhVFFwYmpEMGtZNzJHCkxueUhp
+    VWdoRmhOUnB4ZittWUxzL0UraUo3dUJoZk1KOXVWRk5OQ2hRRWU5SHpnaUYyMGp1RTA1N0dHNjAx
+    YUIKaGZZTXp3a0t3TVpVcnVrMzMxcW4waEQyZkxHWDZtSXl5YnI3ekQxemFLTGhHNzVxMUtyUWgw
+    dTNsWEFNMTg3QgppQzBHcHpMWEdYd2dzSTl1MFpudk5qc3JsVEEzdldwK2YrbWtXSGVWMy9mNTBn
+    d2NpRmRmQlNWdmlkZW91OHpnClN0b0ExVlV0QWdNQkFBRUNnZ0VBWHVVWHZlM0Q3eEdRd1JkYU9N
+    TGdLY2ExMGwxTmVIZTZqYWxwblNRYUFObS8KME5KR2wxM1djMXdzcDczZWhtZEdLN0tsaWxkQmkr
+    NVlLT3BwMndyRnVZT01xZ1RhbVhkMnZqMEtma1p6UlVkVQpOUjdxVzNPSXQ5TExJTGduOG1ubERL
+    MDJ6Z2QyNFFVZVp6MmM1dURHRVRIVGt0d1BuOWdla3BnNVI1Y2s2Z04vCnd0Rm04bzZjSmtkTmxO
+    NDJ2QUpla211YXAvNlRiUHJmb25SdWZUV25OVUxvYTh4Uk1EV3kwdTF3d3ZpRURJM1YKZDNiUnBV
+    YXRPU0E4bnJJdWUrRSt1b1h0Y2RrNzRmMC9vK0loOTU1N21LTTh2T2ZZWFIrSlcyZkd1NzNiTXds
+    RApwK2g1eXhEbTRnUTFpS0c1Nm1sYkhDZzNQM3BadUg3ZmhzZFh4YUlnZXdLQmdRRDlqcTZRdits
+    TzhzeUdFRUtzCm9IeVczanVLcXZTU3lhd1RxOWR5UGN6QVp5NEhKdE5SV0ZyTjBRaDFpQ2FNdi82
+    bkVDeU5URmtBcHlrekpMZHUKL0dDTE1Ud0xrdTRHVlJoMS9GTmlMeTcramhkOGNHV2dCZ3djbmhm
+    K1JuYWtvcVU5OXl5QjBGaHNUeVp5dVhnRAoxOVpubmkzb1U1YnNjdytEbzM1bTRySEljd0tCZ1FE
+    Yno5ejBxMk1HYmhSZUpkU2MzMUtTZzBBN0hNNG1Ybkh1CkpZdHlsM1VpbkMyOGJRMy8xYjNNVjNS
+    K295amh3a0d2R3hER3lOQlZVdUN3Z2lNVmtaUGJRMlNtRlBTbUQzbFMKZGNMcExnY3lueWFUNWdw
+    czRVdkFkYXI1UW5xTE1yQmwrMGNUcFA5NXRhTEdYWDBrK2ZiVGZ4V3VhcTJPZzVoMApDdDVwekRB
+    ajN3S0JnQ0lZeHRiR1IreUs3Ly96UGRRUy9NNFk4bTdTVUhOUTFXZ0x5cndkSFdTZU8yMVF4a2dC
+    CkZxem91RGQ5NkpreTFGN0k2UVRUU0lDeStmSmJ0S01qSXlSMHFYdHc5YnM2UkVEUmZyRU1ZVWh2
+    K1M2TnVzekwKSTJQUnlxNHg4WkJ3SXNKemM3TzlQYmJLNmdPeGR6Y2xGanIyNVh1QmlpRWYwKzFD
+    MWlPbHhueUxBb0dBQ1dlWApXSkNNcUJYRm9WR1ZDekV5NHpuaVlhVVYzT1psa1g3aHZJRm1iWmlw
+    REVyT01vZittdU9UQkdnT3M3b1AvV0gzCkVjbzl2NmpRSEQwMUt4TVRkR29wd0VGZFJrMmJMMEFD
+    bXQ5eFIyVXZ6VndtVGdwRnAzSmhZbERKMVhMUndVdEMKKzBBdi9oRWJhY2xPTldyTWVMZ1RRV2Nu
+    RGRYcmkrdDdJS092MjVrQ2dZRUE2ZDVibGtvWWZZUHRaMWFFMjVQaApJVEo1UEUzV2hhL0NndGRP
+    amg5dGtUKzNDaFgxcFhYZWJ6bkI4eEY2L2tSa1YwVkR2TXdmcjdRaXMwQWdkZEtECmVwOUJIYTRI
+    U1pHWHJvY0l5dWJWT2xZNCtuQTYzQ2tBWi9NRWxmdnpJZ0hpNXZvWUljY2ExVmFqT2FVSEhTNXIK
+    SmNHV0tFS0ZGUHRMMkNETmpZYm1oZnM9Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+  GDRIVE_CLIENT_SECRET: R09DU1BYLWVfeWdEdmFLeTNldFhhUzJQdFNKdEFDVl8zSFE=
+  GDRIVE_REFRESH_TOKEN: MS8vMGhkRkZYLW4yYjZXSkNnWUlBUkFBR0JFU053Ri1MOUlyOWFiOGpDeFY0MUhWbzFNZ3FVemtjOXB4a2piRDMzSlVVVXoyT0VQSE93SDlIdU5kc2NzY09QZ3dtN3FDX0hFRDZaSQ==
+
+
+
+
+imagePullSecrets: ""
+nameOverride: backend
+fullnameOverride: backend
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30080
+
+ingress:
+  enabled: false
+  className: "traefik"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "letsencrypt"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  hosts:
+    - host: TRAEFIK_HOST
+      paths:
+        - path: ${{ TRAEFIK_PATH }}
+          pathType: Prefix
+  tls:
+    - hosts:
+        - TRAEFIK_HOST
+      secretName: ${{ SECRET_NAME }}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  # targetCPUUtilizationPercentage: 70
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
