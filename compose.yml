@@ -13,6 +13,54 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - backend_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
+  api:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: api_core_container
+    restart: always
+    environment:
+      MP_ACCESS_TOKEN: APP_USR-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      MP_SUCCESS_URL: http://localhost:4200/cart/success
+      MP_FAILURE_URL: http://localhost:4200/cart/failure
+      MP_PENDING_URL: http://localhost:4200/cart/pending
+      SERVER_ADDRESS: :8080
+      FRONTEND_URL: http://localhost:4200
+      JWT_SECRET: cambia-este-secret-en-produccion
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 3306
+      DATABASE_USER: user
+      DATABASE_PASS: password
+      DATABASE_NAME: core
+      AFIP_ENABLED: true
+      AFIP_ENVIRONMENT: testing
+      AFIP_CUIT: X
+      AFIP_CERT_PATH: ./certs/cert.crt
+      AFIP_KEY_PATH: ./certs/cert.key
+      GDRIVE_FOLDER_ID: X
+      GDRIVE_CLIENT_ID: X
+      GDRIVE_CLIENT_SECRET: X
+      GDRIVE_REFRESH_TOKEN: X
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend_network
 
 volumes:
   db_data:
+
+networks:
+  backend_network:
+    driver: bridge
