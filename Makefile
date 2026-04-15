@@ -139,6 +139,15 @@ else
 	echo "  $$downfile"
 endif
 
+deploy-test:
+	@echo "Deploying to test..."
+	cd manifests && helm upgrade --install --namespace test-yvaga -f .\values-test.yaml test-yvaga-backend . --create-namespace --force-replace
+
+deploy:
+	@echo "Deploying to prod..."
+	cd manifests && helm upgrade --install --namespace yvaga -f .\values.yaml yvaga-backend . --create-namespace --force-replace
+
+
 tree:
 	@go run ./internal/pkg/tree.go
 

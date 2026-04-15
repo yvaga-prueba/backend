@@ -15,11 +15,11 @@ image:
   readinessProbe: /healthz
 
 configMap:
-  MP_SUCCESS_URL: http://187.127.3.252:30090/cart/success
-  MP_FAILURE_URL: http://187.127.3.252:30090/cart/failure
-  MP_PENDING_URL: http://187.127.3.252:30090/cart/pending
+  MP_SUCCESS_URL: https://test.yvaga.com.ar/cart/success
+  MP_FAILURE_URL: https://test.yvaga.com.ar/cart/failure
+  MP_PENDING_URL: https://test.yvaga.com.ar/cart/pending
   SERVER_ADDRESS: :8080
-  FRONTEND_URL: http://187.127.3.252:30090
+  FRONTEND_URL: https://test.yvaga.com.ar
   DATABASE_HOST: mariadb-host
   DATABASE_PORT: 3306
   DATABASE_USER: usr_yvaga_t
@@ -122,7 +122,7 @@ service:
   nodePort: 30080
 
 ingress:
-  enabled: false
+  enabled: true
   className: "traefik"
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
@@ -130,14 +130,14 @@ ingress:
     traefik.ingress.kubernetes.io/router.tls.certresolver: "letsencrypt"
     cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
-    - host: TRAEFIK_HOST
+    - host: api-test.yvaga.com.ar
       paths:
-        - path: ${{ TRAEFIK_PATH }}
+        - path: /
           pathType: Prefix
   tls:
     - hosts:
-        - TRAEFIK_HOST
-      secretName: ${{ SECRET_NAME }}
+        - api-test.yvaga.com.ar
+      secretName: api-test-yvaga-com-ar
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
