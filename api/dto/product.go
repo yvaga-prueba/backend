@@ -1,7 +1,7 @@
 package dto
 
 import "core/domain/model"
-
+import "time"
 
 type CreateProductRequest struct {
 	BarCode     int64   `json:"bar_code" example:"7501234567890" validate:"required"`
@@ -94,6 +94,7 @@ type ProductResponse struct {
 	Category    string  `json:"category" example:"Remeras"`
 	UnitPrice   float64 `json:"unit_price" example:"2500.00"`
 	ImageURL    string  `json:"image_url,omitempty"` // URL de la imagen primaria (Google Drive)
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 
@@ -110,6 +111,7 @@ func FromEntity(p model.Product) ProductResponse {
 		FitType:     p.FitType,
 		Category:    p.Category,
 		UnitPrice:   p.UnitPrice,
+		CreatedAt:   p.CreatedAt,
 	}
 }
 
