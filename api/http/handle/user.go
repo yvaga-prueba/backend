@@ -2,6 +2,7 @@ package handle
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -323,4 +324,82 @@ func (h *AuthHandler) ChangePassword(c echo.Context) error {
 
 	// 7. Responder OK a Angular
 	return c.JSON(http.StatusOK, map[string]string{"message": "Contraseña actualizada con éxito"})
+}
+
+// UpdateProfile godoc
+// @Summary      Actualizar perfil
+// @Description  Permite a un usuario actualizar su nombre, apellido y email.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Router       /api/profile [put]
+// UpdateProfile godoc
+// @Summary      Actualizar perfil
+// @Description  Permite a un usuario actualizar su nombre, apellido y email.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Router       /api/auth/profile [put]
+func (h *AuthHandler) UpdateProfile(c echo.Context) error {
+	
+
+	// 1. Definimos el contexto una sola vez al principio
+	ctx := c.Request().Context()
+
+	userToken := c.Get("user")
+	if userToken == nil {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "unauthorized"})
+	}
+
+	token, ok := userToken.(*jwt.Token)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "invalid token"})
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "invalid claims"})
+	}
+
+	userIDFloat, ok := claims["user_id"].(float64)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, dto.ErrorGeneral{Message: "invalid user_id"})
+	}
+	userID := int64(userIDFloat)
+
+	// 2. Leemos los datos nuevos que mandó Angular
+	var req struct {
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+		Email     string `json:"email"`
+	}
+	
+	if err := c.Bind(&req); err != nil {
+		fmt.Println("❌ ERROR DE BINDING:", err)
+		return c.JSON(http.StatusBadRequest, dto.ErrorGeneral{Message: "Datos inválidos"})
+	}
+	
+	fmt.Println("✅ DATOS RECIBIDOS PERFECTO:", req)
+
+	// 3. Buscamos el usuario en la BD
+	foundUser, err := h.userRepo.GetByID(ctx, userID)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, dto.ErrorGeneral{Message: "Usuario no encontrado"})
+	}
+
+	// 4. Actualizamos solo los campos permitidos
+	foundUser.FirstName = req.FirstName
+	foundUser.LastName = req.LastName
+	foundUser.Email = req.Email
+
+	// 5. Guardamos en la base de datos
+	if err := h.userRepo.Update(ctx, &foundUser); err != nil {
+		fmt.Println("❌ ERROR AL GUARDAR EN BD:", err)
+		return c.JSON(http.StatusInternalServerError, dto.ErrorGeneral{Message: "Error al guardar en la base de datos"})
+	}
+
+	// 6. Devolvemos el usuario limpio a Angular
+	return c.JSON(http.StatusOK, dto.FromUserEntity(foundUser))
 }

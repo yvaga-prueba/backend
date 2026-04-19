@@ -180,7 +180,6 @@ func FromTicketSummary(ticket model.Ticket, lines []model.TicketLine) TicketSumm
 		Subtotal:       ticket.Subtotal,
 		TaxAmount:      ticket.TaxAmount,
 		Total:          ticket.Total,
-		ItemCount:      totalItems,
 		Lines:          lineResponses,
 		SellerName:     ticket.SellerName,
 		ClientName:     ticket.ClientName,
@@ -193,5 +192,6 @@ func FromTicketSummary(ticket model.Ticket, lines []model.TicketLine) TicketSumm
 		CAEDueDate:     ticket.CAEDueDate,
 		TrackingNumber: ticket.TrackingNumber,
 		CreatedAt:      ticket.CreatedAt,
+		ItemCount: ticket.ItemCount,
 	}
 }

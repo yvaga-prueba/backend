@@ -83,6 +83,7 @@ func Router(
 	protected.Use(jwtutil.JWTMiddleware(&cfg))
 	protected.GET("/auth/me", authHandler.Me)
 	protected.PUT("/auth/password", authHandler.ChangePassword)
+	protected.PUT("/auth/profile", authHandler.UpdateProfile)
 
 	// Rutas protegidas de productos
 	protected.POST("/products", productHandler.Create)
@@ -106,6 +107,10 @@ func Router(
 
 	// Rutas públicas de tickets (receipt)
 	e.GET("/api/tickets/:id/receipt", ticketHandler.GetReceipt)
+
+	//cambio de gmail
+	//g.PUT("/profile", userHandler.UpdateProfile)
+	
 
 	// Rutas protegidas de tickets
 	protected.POST("/tickets", ticketHandler.Create)
