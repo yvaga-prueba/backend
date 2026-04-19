@@ -199,14 +199,31 @@ func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.
 }
 
 func (r *ProductRepo) UpdateStock(ctx context.Context, id int64, delta int64) error {
+	var query string
+	var res sql.Result
+	var err error
 
-	res, err := r.DB.ExecContext(ctx, `UPDATE products SET stock = stock + ? WHERE id = ?`, delta, id)
+	if delta < 0 {
+		// VENTAS: Si estamos restando stock, le exigimos a MySQL que solo haga el update
+		// SI Y SOLO SI el stock actual es mayor o igual a lo que intentamos restar.
+		cantidadARestar := -delta
+		query = `UPDATE products SET stock = stock + ? WHERE id = ? AND stock >= ?`
+		res, err = r.DB.ExecContext(ctx, query, delta, id, cantidadARestar)
+	} else {
+		// DEVOLUCIONES/CARGA: Si sumamos stock, actualizamos normal
+		query = `UPDATE products SET stock = stock + ? WHERE id = ?`
+		res, err = r.DB.ExecContext(ctx, query, delta, id)
+	}
+
 	if err != nil {
 		return err
 	}
+	
 	aff, _ := res.RowsAffected()
 	if aff == 0 {
-		return errorcode.ErrNotFound
+		// Si afecta 0 filas, significa que mientras se procesaba, otro usuario compró primero
+		// y el stock llegó a 0 antes de que este usuario pudiera descontarlo.
+		return fmt.Errorf("operación rechazada: otro usuario acaba de comprar el último stock disponible")
 	}
 	return nil
 }
