@@ -47,8 +47,6 @@ func (h *ProductHandler) List(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "internal error"})
 	}
 
-	
-
 	// extrae todos los id
 	var productIDs []int64
 	for _, p := range ps {
@@ -69,8 +67,6 @@ func (h *ProductHandler) List(c echo.Context) error {
 		imageURL := imagesMap[p.ID] // Busca en el mapa. Si no tiene foto, devuelve "" automáticamente
 		productResponses = append(productResponses, dto.FromEntityWithImage(p, imageURL))
 	}
-
-	
 
 	response := map[string]interface{}{
 		"products":    productResponses,

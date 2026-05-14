@@ -3,8 +3,8 @@ package entity
 import (
 	"context"
 	"database/sql"
-	"fmt"        
-    "strings"
+	"fmt"
+	"strings"
 
 	"core/domain/model"
 	"core/domain/repo"
@@ -142,7 +142,7 @@ func (r *productImageRepository) GetPrimaryImagesBatch(ctx context.Context, prod
 		FROM product_images 
 		WHERE product_id IN (%s)
 		ORDER BY position ASC, id ASC
-	`, strings.Join(placeholders, ","))
+	`, strings.Join(placeholders, ",")) // #nosec G201
 
 	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
@@ -152,7 +152,7 @@ func (r *productImageRepository) GetPrimaryImagesBatch(ctx context.Context, prod
 
 	// Armamos un diccionario (map) que conecte [ID_PRODUCTO] -> "URL_FOTO"
 	result := make(map[int64]string)
-	
+
 	for rows.Next() {
 		var productID int64
 		var url string
@@ -162,7 +162,7 @@ func (r *productImageRepository) GetPrimaryImagesBatch(ctx context.Context, prod
 		}
 
 		// Si es la imagen primaria, la guardamos definitivamente.
-		
+
 		if _, exists := result[productID]; !exists || isPrimary {
 			result[productID] = url
 		}

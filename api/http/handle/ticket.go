@@ -163,9 +163,9 @@ func (h *TicketHandler) GetMyTickets(c echo.Context) error {
 
 	// Convert to summary responses (we don't need full line items for list)
 	summaries := make([]dto.TicketSummaryResponse, len(tickets))
-	
+
 	for i, ticket := range tickets {
-		
+
 		summaries[i] = dto.FromTicketSummary(ticket, nil)
 	}
 
@@ -221,7 +221,7 @@ func (h *TicketHandler) List(c echo.Context) error {
 
 	summaries := make([]dto.TicketSummaryResponse, len(tickets))
 	for i, ticket := range tickets {
-		
+
 		summaries[i] = dto.FromTicketSummary(ticket, nil)
 	}
 
@@ -275,7 +275,7 @@ func (h *TicketHandler) ListInvoices(c echo.Context) error {
 
 	summaries := make([]dto.TicketSummaryResponse, len(tickets))
 	for i, ticket := range tickets {
-		
+
 		summaries[i] = dto.FromTicketSummary(ticket, nil)
 	}
 

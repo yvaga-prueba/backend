@@ -8,7 +8,7 @@ type Product struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Stock       int64     `json:"stock"`
-	Size        string    `json:"size"` 
+	Size        string    `json:"size"`
 	Color       string    `json:"color"`
 	Gender      string    `json:"gender"`
 	FitType     string    `json:"fit_type"`

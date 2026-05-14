@@ -72,7 +72,7 @@ func NewTicketService(
 		productRepo:    productRepo,
 		afipService:    afipService,
 		sellerRepo:     sellerRepo,
-		userRepo:       userRepo, 
+		userRepo:       userRepo,
 	}
 }
 
@@ -148,23 +148,23 @@ func (s *ticketServiceImpl) CreateTicket(
 	}
 
 	ticket := &model.Ticket{
-		UserID:        userID,
-		TicketNumber:  model.GenerateTicketNumber(),
-		Status:        initialStatus,
-		PaymentMethod: paymentMethod,
-		TaxRate:       model.DefaultTaxRate,
-		Notes:         notes,
-		CouponCode:    couponCode,
-		PaidAt:        paidAt,
-		ClientName:    clientName,
-		ClientEmail:   clientEmail,
-		ClientContact: finalClientContact,
+		UserID:          userID,
+		TicketNumber:    model.GenerateTicketNumber(),
+		Status:          initialStatus,
+		PaymentMethod:   paymentMethod,
+		TaxRate:         model.DefaultTaxRate,
+		Notes:           notes,
+		CouponCode:      couponCode,
+		PaidAt:          paidAt,
+		ClientName:      clientName,
+		ClientEmail:     clientEmail,
+		ClientContact:   finalClientContact,
 		ShippingAddress: shippingAddr,
 		ShippingZipCode: shippingZip,
 		ShippingPhone:   shippingPhone,
 		ShippingMessage: shippingMsg,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		CreatedAt:       now,
+		UpdatedAt:       now,
 	}
 
 	// 1. Calculamos los totales base (subtotal sin descuentos)

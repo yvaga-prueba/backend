@@ -110,7 +110,6 @@ func Router(
 
 	//cambio de gmail
 	//g.PUT("/profile", userHandler.UpdateProfile)
-	
 
 	// Rutas protegidas de tickets
 	protected.POST("/tickets", ticketHandler.Create)

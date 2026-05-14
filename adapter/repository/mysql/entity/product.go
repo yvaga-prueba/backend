@@ -44,7 +44,7 @@ func (r *ProductRepo) Create(ctx context.Context, p *model.Product) error {
 }
 
 func (r *ProductRepo) Read(ctx context.Context) ([]model.Product, error) {
-	
+
 	q := `SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at 
 		FROM products`
 
@@ -130,7 +130,7 @@ func (r *ProductRepo) GetByID(ctx context.Context, id int64) (*model.Product, er
 		SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at
 		FROM products WHERE id = ?`, id).
 		Scan(&p.ID, &p.BarCode, &p.Title, &p.Description, &p.Stock, &p.Size, &p.Color, &p.Gender, &p.FitType, &p.Category, &p.UnitPrice, &p.UpdatedAt, &p.CreatedAt)
-	
+
 	// Si MySQL me dice que no hay resultados, devuelvo mi error personalizado para manejarlo limpio en el frontend
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, errorcode.ErrNotFound
@@ -142,7 +142,7 @@ func (r *ProductRepo) List(ctx context.Context, f model.ProductFilter) ([]model.
 
 	q := `
 		SELECT id, bar_code, title, description, stock, size, color, gender, fit_type, category, unit_price, updated_at, created_at
-		FROM products WHERE 1=1` 
+		FROM products WHERE 1=1`
 	args := []any{}
 
 	// Voy chequeando qué filtros me pasaron y los agrego a la consulta
@@ -218,7 +218,7 @@ func (r *ProductRepo) UpdateStock(ctx context.Context, id int64, delta int64) er
 	if err != nil {
 		return err
 	}
-	
+
 	aff, _ := res.RowsAffected()
 	if aff == 0 {
 		// Si afecta 0 filas, significa que mientras se procesaba, otro usuario compró primero

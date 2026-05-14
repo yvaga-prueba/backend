@@ -343,7 +343,6 @@ func (h *AuthHandler) ChangePassword(c echo.Context) error {
 // @Security     BearerAuth
 // @Router       /api/auth/profile [put]
 func (h *AuthHandler) UpdateProfile(c echo.Context) error {
-	
 
 	// 1. Definimos el contexto una sola vez al principio
 	ctx := c.Request().Context()
@@ -375,12 +374,12 @@ func (h *AuthHandler) UpdateProfile(c echo.Context) error {
 		LastName  string `json:"last_name"`
 		Email     string `json:"email"`
 	}
-	
+
 	if err := c.Bind(&req); err != nil {
 		fmt.Println("❌ ERROR DE BINDING:", err)
 		return c.JSON(http.StatusBadRequest, dto.ErrorGeneral{Message: "Datos inválidos"})
 	}
-	
+
 	fmt.Println("✅ DATOS RECIBIDOS PERFECTO:", req)
 
 	// 3. Buscamos el usuario en la BD

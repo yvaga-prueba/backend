@@ -114,14 +114,30 @@ func (r *TicketRepo) GetByID(ctx context.Context, id int64) (*model.Ticket, erro
 		return nil, err
 	}
 
-	if paidAt.Valid { ticket.PaidAt = &paidAt.Time }
-	if completedAt.Valid { ticket.CompletedAt = &completedAt.Time }
-	if cancelledAt.Valid { ticket.CancelledAt = &cancelledAt.Time }
-	if caeDueDate.Valid { ticket.CAEDueDate = &caeDueDate.Time }
-	if invType.Valid { ticket.InvoiceType = &invType.String }
-	if invNum.Valid { ticket.InvoiceNumber = &invNum.String }
-	if cae.Valid { ticket.CAE = &cae.String }
-	if tracking.Valid { ticket.TrackingNumber = &tracking.String }
+	if paidAt.Valid {
+		ticket.PaidAt = &paidAt.Time
+	}
+	if completedAt.Valid {
+		ticket.CompletedAt = &completedAt.Time
+	}
+	if cancelledAt.Valid {
+		ticket.CancelledAt = &cancelledAt.Time
+	}
+	if caeDueDate.Valid {
+		ticket.CAEDueDate = &caeDueDate.Time
+	}
+	if invType.Valid {
+		ticket.InvoiceType = &invType.String
+	}
+	if invNum.Valid {
+		ticket.InvoiceNumber = &invNum.String
+	}
+	if cae.Valid {
+		ticket.CAE = &cae.String
+	}
+	if tracking.Valid {
+		ticket.TrackingNumber = &tracking.String
+	}
 
 	if seller.Valid {
 		ticket.SellerName = seller.String
@@ -203,14 +219,30 @@ func (r *TicketRepo) GetByTicketNumber(ctx context.Context, ticketNumber string)
 		return nil, err
 	}
 
-	if paidAt.Valid { ticket.PaidAt = &paidAt.Time }
-	if completedAt.Valid { ticket.CompletedAt = &completedAt.Time }
-	if cancelledAt.Valid { ticket.CancelledAt = &cancelledAt.Time }
-	if caeDueDate.Valid { ticket.CAEDueDate = &caeDueDate.Time }
-	if invType.Valid { ticket.InvoiceType = &invType.String }
-	if invNum.Valid { ticket.InvoiceNumber = &invNum.String }
-	if cae.Valid { ticket.CAE = &cae.String }
-	if tracking.Valid { ticket.TrackingNumber = &tracking.String }
+	if paidAt.Valid {
+		ticket.PaidAt = &paidAt.Time
+	}
+	if completedAt.Valid {
+		ticket.CompletedAt = &completedAt.Time
+	}
+	if cancelledAt.Valid {
+		ticket.CancelledAt = &cancelledAt.Time
+	}
+	if caeDueDate.Valid {
+		ticket.CAEDueDate = &caeDueDate.Time
+	}
+	if invType.Valid {
+		ticket.InvoiceType = &invType.String
+	}
+	if invNum.Valid {
+		ticket.InvoiceNumber = &invNum.String
+	}
+	if cae.Valid {
+		ticket.CAE = &cae.String
+	}
+	if tracking.Valid {
+		ticket.TrackingNumber = &tracking.String
+	}
 
 	if seller.Valid {
 		ticket.SellerName = seller.String

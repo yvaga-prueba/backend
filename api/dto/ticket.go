@@ -14,18 +14,18 @@ type TicketItemRequest struct {
 
 // CreateTicketRequest is the request to create a new ticket
 type CreateTicketRequest struct {
-	Items         []TicketItemRequest `json:"items"`
-	PaymentMethod model.PaymentMethod `json:"payment_method" example:"cash"`
-	Notes         string              `json:"notes,omitempty" example:"Customer notes"`
-	CouponCode    string              `json:"coupon_code"`
-	ClientName    string              `json:"client_name"`
-	ClientEmail   string              `json:"client_email"`
-	ClientDNI     string              `json:"client_dni"` //
-	ClientContact string              `json:"client_contact"`
-	ShippingAddress string           `json:"shipping_address"`
-	ShippingZipCode string           `json:"shipping_zip_code"`
-	ShippingPhone   string           `json:"shipping_phone"`
-	ShippingMessage string           `json:"shipping_message"`
+	Items           []TicketItemRequest `json:"items"`
+	PaymentMethod   model.PaymentMethod `json:"payment_method" example:"cash"`
+	Notes           string              `json:"notes,omitempty" example:"Customer notes"`
+	CouponCode      string              `json:"coupon_code"`
+	ClientName      string              `json:"client_name"`
+	ClientEmail     string              `json:"client_email"`
+	ClientDNI       string              `json:"client_dni"` //
+	ClientContact   string              `json:"client_contact"`
+	ShippingAddress string              `json:"shipping_address"`
+	ShippingZipCode string              `json:"shipping_zip_code"`
+	ShippingPhone   string              `json:"shipping_phone"`
+	ShippingMessage string              `json:"shipping_message"`
 }
 
 // TicketLineResponse represents a ticket line item in responses
@@ -42,64 +42,64 @@ type TicketLineResponse struct {
 
 // TicketResponse represents a full ticket with line items
 type TicketResponse struct {
-	ID             int64                `json:"id" example:"1"`
-	UserID         int64                `json:"user_id" example:"1"`
-	TicketNumber   string               `json:"ticket_number" example:"TKT-2024-000001"`
-	Status         model.TicketStatus   `json:"status" example:"paid"`
-	PaymentMethod  model.PaymentMethod  `json:"payment_method" example:"cash"`
-	Subtotal       float64              `json:"subtotal" example:"199.98"`
-	TaxRate        float64              `json:"tax_rate" example:"21.00"`
-	TaxAmount      float64              `json:"tax_amount" example:"41.99"`
-	Total          float64              `json:"total" example:"241.97"`
-	Notes          string               `json:"notes,omitempty"`
-	SellerName     string               `json:"seller_name"`
-	ClientName     string               `json:"client_name"`
-	ClientDNI      string               `json:"client_dni"` //
-	ClientContact  string               `json:"client_contact"`
-	CouponCode     string               `json:"coupon_code"`
-	InvoiceType    *string              `json:"invoice_type,omitempty"`
-	InvoiceNumber  *string              `json:"invoice_number,omitempty"`
-	CAE            *string              `json:"cae,omitempty"`
-	CAEDueDate     *time.Time           `json:"cae_due_date,omitempty"`
-	TrackingNumber *string              `json:"tracking_number,omitempty"`
-	ShippingAddress string              `json:"shipping_address,omitempty"`
-	ShippingZipCode string              `json:"shipping_zip_code,omitempty"`
-	ShippingPhone   string              `json:"shipping_phone,omitempty"`
-	ShippingMessage string              `json:"shipping_message,omitempty"`
-	Lines          []TicketLineResponse `json:"lines"`
-	PaidAt         *time.Time           `json:"paid_at,omitempty"`
-	CompletedAt    *time.Time           `json:"completed_at,omitempty"`
-	CancelledAt    *time.Time           `json:"cancelled_at,omitempty"`
-	CreatedAt      time.Time            `json:"created_at"`
-	UpdatedAt      time.Time            `json:"updated_at"`
+	ID              int64                `json:"id" example:"1"`
+	UserID          int64                `json:"user_id" example:"1"`
+	TicketNumber    string               `json:"ticket_number" example:"TKT-2024-000001"`
+	Status          model.TicketStatus   `json:"status" example:"paid"`
+	PaymentMethod   model.PaymentMethod  `json:"payment_method" example:"cash"`
+	Subtotal        float64              `json:"subtotal" example:"199.98"`
+	TaxRate         float64              `json:"tax_rate" example:"21.00"`
+	TaxAmount       float64              `json:"tax_amount" example:"41.99"`
+	Total           float64              `json:"total" example:"241.97"`
+	Notes           string               `json:"notes,omitempty"`
+	SellerName      string               `json:"seller_name"`
+	ClientName      string               `json:"client_name"`
+	ClientDNI       string               `json:"client_dni"` //
+	ClientContact   string               `json:"client_contact"`
+	CouponCode      string               `json:"coupon_code"`
+	InvoiceType     *string              `json:"invoice_type,omitempty"`
+	InvoiceNumber   *string              `json:"invoice_number,omitempty"`
+	CAE             *string              `json:"cae,omitempty"`
+	CAEDueDate      *time.Time           `json:"cae_due_date,omitempty"`
+	TrackingNumber  *string              `json:"tracking_number,omitempty"`
+	ShippingAddress string               `json:"shipping_address,omitempty"`
+	ShippingZipCode string               `json:"shipping_zip_code,omitempty"`
+	ShippingPhone   string               `json:"shipping_phone,omitempty"`
+	ShippingMessage string               `json:"shipping_message,omitempty"`
+	Lines           []TicketLineResponse `json:"lines"`
+	PaidAt          *time.Time           `json:"paid_at,omitempty"`
+	CompletedAt     *time.Time           `json:"completed_at,omitempty"`
+	CancelledAt     *time.Time           `json:"cancelled_at,omitempty"`
+	CreatedAt       time.Time            `json:"created_at"`
+	UpdatedAt       time.Time            `json:"updated_at"`
 }
 
 // TicketSummaryResponse is a lightweight ticket response for lists
 type TicketSummaryResponse struct {
-	ID             int64                `json:"id" example:"1"`
-	TicketNumber   string               `json:"ticket_number" example:"TKT-2024-000001"`
-	Status         model.TicketStatus   `json:"status" example:"paid"`
-	PaymentMethod  model.PaymentMethod  `json:"payment_method" example:"cash"`
-	Subtotal       float64              `json:"subtotal"`
-	TaxAmount      float64              `json:"tax_amount"`
-	Total          float64              `json:"total" example:"241.97"`
-	ItemCount      int                  `json:"item_count" example:"3"`
-	Lines          []TicketLineResponse `json:"lines"`
-	SellerName     string               `json:"seller_name"`
-	ClientName     string               `json:"client_name"`
-	ClientDNI      string               `json:"client_dni"` //
-	ClientContact  string               `json:"client_contact"`
-	CouponCode     string               `json:"coupon_code"`
-	InvoiceType    *string              `json:"invoice_type,omitempty"`
-	InvoiceNumber  *string              `json:"invoice_number,omitempty"`
-	CAE            *string              `json:"cae,omitempty"`
-	CAEDueDate     *time.Time           `json:"cae_due_date,omitempty"`
-	TrackingNumber *string              `json:"tracking_number,omitempty"`
-	ShippingAddress string              `json:"shipping_address,omitempty"`
-	ShippingZipCode string              `json:"shipping_zip_code,omitempty"`
-	ShippingPhone   string              `json:"shipping_phone,omitempty"`
-	ShippingMessage string              `json:"shipping_message,omitempty"`
-	CreatedAt      time.Time            `json:"created_at"`
+	ID              int64                `json:"id" example:"1"`
+	TicketNumber    string               `json:"ticket_number" example:"TKT-2024-000001"`
+	Status          model.TicketStatus   `json:"status" example:"paid"`
+	PaymentMethod   model.PaymentMethod  `json:"payment_method" example:"cash"`
+	Subtotal        float64              `json:"subtotal"`
+	TaxAmount       float64              `json:"tax_amount"`
+	Total           float64              `json:"total" example:"241.97"`
+	ItemCount       int                  `json:"item_count" example:"3"`
+	Lines           []TicketLineResponse `json:"lines"`
+	SellerName      string               `json:"seller_name"`
+	ClientName      string               `json:"client_name"`
+	ClientDNI       string               `json:"client_dni"` //
+	ClientContact   string               `json:"client_contact"`
+	CouponCode      string               `json:"coupon_code"`
+	InvoiceType     *string              `json:"invoice_type,omitempty"`
+	InvoiceNumber   *string              `json:"invoice_number,omitempty"`
+	CAE             *string              `json:"cae,omitempty"`
+	CAEDueDate      *time.Time           `json:"cae_due_date,omitempty"`
+	TrackingNumber  *string              `json:"tracking_number,omitempty"`
+	ShippingAddress string               `json:"shipping_address,omitempty"`
+	ShippingZipCode string               `json:"shipping_zip_code,omitempty"`
+	ShippingPhone   string               `json:"shipping_phone,omitempty"`
+	ShippingMessage string               `json:"shipping_message,omitempty"`
+	CreatedAt       time.Time            `json:"created_at"`
 }
 
 // TicketReceiptResponse represents a printable receipt
@@ -145,36 +145,36 @@ func FromTicket(ticket model.Ticket, lines []model.TicketLine) TicketResponse {
 	}
 
 	return TicketResponse{
-		ID:             ticket.ID,
-		UserID:         ticket.UserID,
-		TicketNumber:   ticket.TicketNumber,
-		Status:         ticket.Status,
-		PaymentMethod:  ticket.PaymentMethod,
-		Subtotal:       ticket.Subtotal,
-		TaxRate:        ticket.TaxRate,
-		TaxAmount:      ticket.TaxAmount,
-		Total:          ticket.Total,
-		Notes:          ticket.Notes,
-		SellerName:     ticket.SellerName,
-		ClientName:     ticket.ClientName,
-		ClientDNI:      ticket.ClientDNI, //
-		ClientContact:  ticket.ClientContact,
-		CouponCode:     ticket.CouponCode,
-		InvoiceType:    ticket.InvoiceType,
-		InvoiceNumber:  ticket.InvoiceNumber,
-		CAE:            ticket.CAE,
-		CAEDueDate:     ticket.CAEDueDate,
-		TrackingNumber: ticket.TrackingNumber,
+		ID:              ticket.ID,
+		UserID:          ticket.UserID,
+		TicketNumber:    ticket.TicketNumber,
+		Status:          ticket.Status,
+		PaymentMethod:   ticket.PaymentMethod,
+		Subtotal:        ticket.Subtotal,
+		TaxRate:         ticket.TaxRate,
+		TaxAmount:       ticket.TaxAmount,
+		Total:           ticket.Total,
+		Notes:           ticket.Notes,
+		SellerName:      ticket.SellerName,
+		ClientName:      ticket.ClientName,
+		ClientDNI:       ticket.ClientDNI, //
+		ClientContact:   ticket.ClientContact,
+		CouponCode:      ticket.CouponCode,
+		InvoiceType:     ticket.InvoiceType,
+		InvoiceNumber:   ticket.InvoiceNumber,
+		CAE:             ticket.CAE,
+		CAEDueDate:      ticket.CAEDueDate,
+		TrackingNumber:  ticket.TrackingNumber,
 		ShippingAddress: ticket.ShippingAddress,
 		ShippingZipCode: ticket.ShippingZipCode,
 		ShippingPhone:   ticket.ShippingPhone,
 		ShippingMessage: ticket.ShippingMessage,
-		Lines:          lineResponses,
-		PaidAt:         ticket.PaidAt,
-		CompletedAt:    ticket.CompletedAt,
-		CancelledAt:    ticket.CancelledAt,
-		CreatedAt:      ticket.CreatedAt,
-		UpdatedAt:      ticket.UpdatedAt,
+		Lines:           lineResponses,
+		PaidAt:          ticket.PaidAt,
+		CompletedAt:     ticket.CompletedAt,
+		CancelledAt:     ticket.CancelledAt,
+		CreatedAt:       ticket.CreatedAt,
+		UpdatedAt:       ticket.UpdatedAt,
 	}
 }
 
@@ -189,29 +189,29 @@ func FromTicketSummary(ticket model.Ticket, lines []model.TicketLine) TicketSumm
 	}
 
 	return TicketSummaryResponse{
-		ID:             ticket.ID,
-		TicketNumber:   ticket.TicketNumber,
-		Status:         ticket.Status,
-		PaymentMethod:  ticket.PaymentMethod,
-		Subtotal:       ticket.Subtotal,
-		TaxAmount:      ticket.TaxAmount,
-		Total:          ticket.Total,
-		Lines:          lineResponses,
-		SellerName:     ticket.SellerName,
-		ClientName:     ticket.ClientName,
-		ClientDNI:      ticket.ClientDNI, //
-		ClientContact:  ticket.ClientContact,
-		CouponCode:     ticket.CouponCode,
-		InvoiceType:    ticket.InvoiceType,
-		InvoiceNumber:  ticket.InvoiceNumber,
-		CAE:            ticket.CAE,
-		CAEDueDate:     ticket.CAEDueDate,
-		TrackingNumber: ticket.TrackingNumber,
+		ID:              ticket.ID,
+		TicketNumber:    ticket.TicketNumber,
+		Status:          ticket.Status,
+		PaymentMethod:   ticket.PaymentMethod,
+		Subtotal:        ticket.Subtotal,
+		TaxAmount:       ticket.TaxAmount,
+		Total:           ticket.Total,
+		Lines:           lineResponses,
+		SellerName:      ticket.SellerName,
+		ClientName:      ticket.ClientName,
+		ClientDNI:       ticket.ClientDNI, //
+		ClientContact:   ticket.ClientContact,
+		CouponCode:      ticket.CouponCode,
+		InvoiceType:     ticket.InvoiceType,
+		InvoiceNumber:   ticket.InvoiceNumber,
+		CAE:             ticket.CAE,
+		CAEDueDate:      ticket.CAEDueDate,
+		TrackingNumber:  ticket.TrackingNumber,
 		ShippingAddress: ticket.ShippingAddress,
 		ShippingZipCode: ticket.ShippingZipCode,
 		ShippingPhone:   ticket.ShippingPhone,
 		ShippingMessage: ticket.ShippingMessage,
-		CreatedAt:      ticket.CreatedAt,
-		ItemCount:      totalItems,
+		CreatedAt:       ticket.CreatedAt,
+		ItemCount:       totalItems,
 	}
 }

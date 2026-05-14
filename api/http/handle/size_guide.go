@@ -23,10 +23,10 @@ func (h *SizeGuideHandler) CreateSizeGuide(c echo.Context) error {
 		category, fit_type, size, min_weight, max_weight, min_height, max_height, 
 		chest_cm, waist_cm, hip_cm, length_cm
 	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	
-	result, err := h.DB.ExecContext(c.Request().Context(), query, 
-		guide.Category, guide.FitType, guide.Size, guide.MinWeight, guide.MaxWeight, 
-		guide.MinHeight, guide.MaxHeight, guide.ChestCm, guide.WaistCm, 
+
+	result, err := h.DB.ExecContext(c.Request().Context(), query,
+		guide.Category, guide.FitType, guide.Size, guide.MinWeight, guide.MaxWeight,
+		guide.MinHeight, guide.MaxHeight, guide.ChestCm, guide.WaistCm,
 		guide.HipCm, guide.LengthCm)
 
 	if err != nil {
@@ -42,8 +42,8 @@ func (h *SizeGuideHandler) CreateSizeGuide(c echo.Context) error {
 // Trae las guías filtradas por categoría y opcionalmente por fit_type (moldería)
 func (h *SizeGuideHandler) GetGuidesByCategory(c echo.Context) error {
 	category := c.Param("category")
-	fitType := c.QueryParam("fit_type") 
-	
+	fitType := c.QueryParam("fit_type")
+
 	var query string
 	var args []interface{}
 
@@ -58,7 +58,7 @@ func (h *SizeGuideHandler) GetGuidesByCategory(c echo.Context) error {
 				 FROM size_guides WHERE category = ?`
 		args = append(args, category)
 	}
-	
+
 	rows, err := h.DB.QueryContext(c.Request().Context(), query, args...)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "error al buscar las guías"})
@@ -69,10 +69,10 @@ func (h *SizeGuideHandler) GetGuidesByCategory(c echo.Context) error {
 
 	for rows.Next() {
 		var g model.SizeGuide
-		
+
 		err := rows.Scan(
-			&g.ID, &g.Category, &g.FitType, &g.Size, &g.MinWeight, &g.MaxWeight, 
-			&g.MinHeight, &g.MaxHeight, &g.ChestCm, &g.WaistCm, 
+			&g.ID, &g.Category, &g.FitType, &g.Size, &g.MinWeight, &g.MaxWeight,
+			&g.MinHeight, &g.MaxHeight, &g.ChestCm, &g.WaistCm,
 			&g.HipCm, &g.LengthCm, &g.CreatedAt, &g.UpdatedAt,
 		)
 
@@ -87,11 +87,11 @@ func (h *SizeGuideHandler) GetGuidesByCategory(c echo.Context) error {
 
 // Trae todas las reglas juntas (para la tabla del panel admin)
 func (h *SizeGuideHandler) GetAllGuides(c echo.Context) error {
-	
+
 	query := `SELECT id, category, fit_type, size, min_weight, max_weight, min_height, max_height, 
 			  chest_cm, waist_cm, hip_cm, length_cm, created_at, updated_at 
 			  FROM size_guides ORDER BY category, fit_type, size`
-	
+
 	rows, err := h.DB.QueryContext(c.Request().Context(), query)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "error al buscar las guías"})
@@ -102,10 +102,10 @@ func (h *SizeGuideHandler) GetAllGuides(c echo.Context) error {
 
 	for rows.Next() {
 		var g model.SizeGuide
-		
+
 		err := rows.Scan(
-			&g.ID, &g.Category, &g.FitType, &g.Size, &g.MinWeight, &g.MaxWeight, 
-			&g.MinHeight, &g.MaxHeight, &g.ChestCm, &g.WaistCm, 
+			&g.ID, &g.Category, &g.FitType, &g.Size, &g.MinWeight, &g.MaxWeight,
+			&g.MinHeight, &g.MaxHeight, &g.ChestCm, &g.WaistCm,
 			&g.HipCm, &g.LengthCm, &g.CreatedAt, &g.UpdatedAt,
 		)
 
@@ -146,10 +146,10 @@ func (h *SizeGuideHandler) UpdateSizeGuide(c echo.Context) error {
 			min_height = ?, max_height = ?, chest_cm = ?, waist_cm = ?, 
 			hip_cm = ?, length_cm = ? 
 			WHERE id = ?`
-	
-	_, err := h.DB.ExecContext(c.Request().Context(), query, 
-		guide.Category, guide.FitType, guide.Size, guide.MinWeight, guide.MaxWeight, 
-		guide.MinHeight, guide.MaxHeight, guide.ChestCm, guide.WaistCm, 
+
+	_, err := h.DB.ExecContext(c.Request().Context(), query,
+		guide.Category, guide.FitType, guide.Size, guide.MinWeight, guide.MaxWeight,
+		guide.MinHeight, guide.MaxHeight, guide.ChestCm, guide.WaistCm,
 		guide.HipCm, guide.LengthCm, id)
 
 	if err != nil {
