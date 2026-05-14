@@ -24,8 +24,8 @@ var _ repo.TicketRepository = (*TicketRepo)(nil)
 
 func (r *TicketRepo) Create(ctx context.Context, ticket *model.Ticket) error {
 	query := `
-		INSERT INTO tickets (user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, tracking_number, seller_name, client_name, client_email, client_dni, client_contact, coupon_code, paid_at, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO tickets (user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, tracking_number, seller_name, client_name, client_email, client_dni, client_contact, coupon_code, shipping_address, shipping_zip_code, shipping_phone, shipping_message, paid_at, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	var paidAt sql.NullTime
 	if ticket.PaidAt != nil {
@@ -48,6 +48,10 @@ func (r *TicketRepo) Create(ctx context.Context, ticket *model.Ticket) error {
 		ticket.ClientDNI, // <-- NUEVO: DNI agregado al insert
 		ticket.ClientContact,
 		ticket.CouponCode,
+		ticket.ShippingAddress,
+		ticket.ShippingZipCode,
+		ticket.ShippingPhone,
+		ticket.ShippingMessage,
 		paidAt,
 		ticket.CreatedAt,
 		ticket.UpdatedAt,
@@ -62,14 +66,13 @@ func (r *TicketRepo) Create(ctx context.Context, ticket *model.Ticket) error {
 
 func (r *TicketRepo) GetByID(ctx context.Context, id int64) (*model.Ticket, error) {
 	query := `
-		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, paid_at, completed_at, cancelled_at, created_at, updated_at,
-		COALESCE((SELECT SUM(quantity) FROM ticket_lines WHERE ticket_id = tickets.id), 0) AS item_count
+		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, shipping_address, shipping_zip_code, shipping_phone, shipping_message, paid_at, completed_at, cancelled_at, created_at, updated_at
 		FROM tickets
 		WHERE id = ?
 	`
 	var ticket model.Ticket
 	var paidAt, completedAt, cancelledAt, caeDueDate sql.NullTime
-	var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon sql.NullString
+	var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon, sAddress, sZip, sPhone, sMsg sql.NullString
 
 	err := r.DB.QueryRowContext(ctx, query, id).Scan(
 		&ticket.ID,
@@ -92,6 +95,10 @@ func (r *TicketRepo) GetByID(ctx context.Context, id int64) (*model.Ticket, erro
 		&clientDNI,
 		&contact,
 		&coupon,
+		&sAddress,
+		&sZip,
+		&sPhone,
+		&sMsg,
 		&paidAt,
 		&completedAt,
 		&cancelledAt,
@@ -117,25 +124,59 @@ func (r *TicketRepo) GetByID(ctx context.Context, id int64) (*model.Ticket, erro
 	if cae.Valid { ticket.CAE = &cae.String }
 	if tracking.Valid { ticket.TrackingNumber = &tracking.String }
 
+<<<<<<< HEAD
 	if seller.Valid { ticket.SellerName = seller.String }
 	if clientName.Valid { ticket.ClientName = clientName.String }
 	if clientDNI.Valid { ticket.ClientDNI = clientDNI.String }
 	if contact.Valid { ticket.ClientContact = contact.String }
 	if coupon.Valid { ticket.CouponCode = coupon.String }
+=======
+	if seller.Valid {
+		ticket.SellerName = seller.String
+	}
+	if clientName.Valid {
+		ticket.ClientName = clientName.String
+	}
+	if clientDNI.Valid {
+		ticket.ClientDNI = clientDNI.String
+	} // <-- NUEVO
+	if contact.Valid {
+		ticket.ClientContact = contact.String
+	}
+	if coupon.Valid {
+		ticket.CouponCode = coupon.String
+	}
+	if sAddress.Valid {
+		ticket.ShippingAddress = sAddress.String
+	}
+	if sZip.Valid {
+		ticket.ShippingZipCode = sZip.String
+	}
+	if sPhone.Valid {
+		ticket.ShippingPhone = sPhone.String
+	}
+	if sMsg.Valid {
+		ticket.ShippingMessage = sMsg.String
+	}
+>>>>>>> 2b2be93de77f9906b75ddcac24c0ee03f7c3d118
 
 	return &ticket, nil
 }
 
 func (r *TicketRepo) GetByTicketNumber(ctx context.Context, ticketNumber string) (*model.Ticket, error) {
 	query := `
+<<<<<<< HEAD
 		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, paid_at, completed_at, cancelled_at, created_at, updated_at,
 		COALESCE((SELECT SUM(quantity) FROM ticket_lines WHERE ticket_id = tickets.id), 0) AS item_count
+=======
+		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, shipping_address, shipping_zip_code, shipping_phone, shipping_message, paid_at, completed_at, cancelled_at, created_at, updated_at
+>>>>>>> 2b2be93de77f9906b75ddcac24c0ee03f7c3d118
 		FROM tickets
 		WHERE ticket_number = ?
 	`
 	var ticket model.Ticket
 	var paidAt, completedAt, cancelledAt, caeDueDate sql.NullTime
-	var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon sql.NullString
+	var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon, sAddress, sZip, sPhone, sMsg sql.NullString
 
 	err := r.DB.QueryRowContext(ctx, query, ticketNumber).Scan(
 		&ticket.ID,
@@ -158,6 +199,10 @@ func (r *TicketRepo) GetByTicketNumber(ctx context.Context, ticketNumber string)
 		&clientDNI,
 		&contact,
 		&coupon,
+		&sAddress,
+		&sZip,
+		&sPhone,
+		&sMsg,
 		&paidAt,
 		&completedAt,
 		&cancelledAt,
@@ -182,19 +227,53 @@ func (r *TicketRepo) GetByTicketNumber(ctx context.Context, ticketNumber string)
 	if cae.Valid { ticket.CAE = &cae.String }
 	if tracking.Valid { ticket.TrackingNumber = &tracking.String }
 
+<<<<<<< HEAD
 	if seller.Valid { ticket.SellerName = seller.String }
 	if clientName.Valid { ticket.ClientName = clientName.String }
 	if clientDNI.Valid { ticket.ClientDNI = clientDNI.String }
 	if contact.Valid { ticket.ClientContact = contact.String }
 	if coupon.Valid { ticket.CouponCode = coupon.String }
+=======
+	if seller.Valid {
+		ticket.SellerName = seller.String
+	}
+	if clientName.Valid {
+		ticket.ClientName = clientName.String
+	}
+	if clientDNI.Valid {
+		ticket.ClientDNI = clientDNI.String
+	} // <-- NUEVO
+	if contact.Valid {
+		ticket.ClientContact = contact.String
+	}
+	if coupon.Valid {
+		ticket.CouponCode = coupon.String
+	}
+	if sAddress.Valid {
+		ticket.ShippingAddress = sAddress.String
+	}
+	if sZip.Valid {
+		ticket.ShippingZipCode = sZip.String
+	}
+	if sPhone.Valid {
+		ticket.ShippingPhone = sPhone.String
+	}
+	if sMsg.Valid {
+		ticket.ShippingMessage = sMsg.String
+	}
+>>>>>>> 2b2be93de77f9906b75ddcac24c0ee03f7c3d118
 
 	return &ticket, nil
 }
 
 func (r *TicketRepo) ListByUserID(ctx context.Context, userID int64, filter repo.TicketFilter) ([]model.Ticket, error) {
 	query := `
+<<<<<<< HEAD
 		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, paid_at, completed_at, cancelled_at, created_at, updated_at,
 		COALESCE((SELECT SUM(quantity) FROM ticket_lines WHERE ticket_id = tickets.id), 0) AS item_count
+=======
+		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, shipping_address, shipping_zip_code, shipping_phone, shipping_message, paid_at, completed_at, cancelled_at, created_at, updated_at
+>>>>>>> 2b2be93de77f9906b75ddcac24c0ee03f7c3d118
 		FROM tickets
 		WHERE user_id = ?
 	`
@@ -212,8 +291,12 @@ func (r *TicketRepo) ListByUserID(ctx context.Context, userID int64, filter repo
 
 func (r *TicketRepo) List(ctx context.Context, filter repo.TicketFilter) ([]model.Ticket, error) {
 	query := `
+<<<<<<< HEAD
 		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, paid_at, completed_at, cancelled_at, created_at, updated_at,
 		COALESCE((SELECT SUM(quantity) FROM ticket_lines WHERE ticket_id = tickets.id), 0) AS item_count
+=======
+		SELECT id, user_id, ticket_number, status, payment_method, subtotal, tax_rate, tax_amount, total, notes, invoice_type, invoice_number, cae, cae_due_date, tracking_number, seller_name, client_name, client_dni, client_contact, coupon_code, shipping_address, shipping_zip_code, shipping_phone, shipping_message, paid_at, completed_at, cancelled_at, created_at, updated_at
+>>>>>>> 2b2be93de77f9906b75ddcac24c0ee03f7c3d118
 		FROM tickets
 		WHERE 1=1
 	`
@@ -337,7 +420,7 @@ func (r *TicketRepo) scanTickets(rows *sql.Rows) ([]model.Ticket, error) {
 	for rows.Next() {
 		var ticket model.Ticket
 		var paidAt, completedAt, cancelledAt, caeDueDate sql.NullTime
-		var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon sql.NullString
+		var invType, invNum, cae, tracking, seller, clientName, clientDNI, contact, coupon, sAddress, sZip, sPhone, sMsg sql.NullString
 
 		err := rows.Scan(
 			&ticket.ID,
@@ -360,6 +443,10 @@ func (r *TicketRepo) scanTickets(rows *sql.Rows) ([]model.Ticket, error) {
 			&clientDNI, // <-- NUEVO (Para Listados)
 			&contact,
 			&coupon,
+			&sAddress,
+			&sZip,
+			&sPhone,
+			&sMsg,
 			&paidAt,
 			&completedAt,
 			&cancelledAt,
@@ -411,6 +498,18 @@ func (r *TicketRepo) scanTickets(rows *sql.Rows) ([]model.Ticket, error) {
 		}
 		if coupon.Valid {
 			ticket.CouponCode = coupon.String
+		}
+		if sAddress.Valid {
+			ticket.ShippingAddress = sAddress.String
+		}
+		if sZip.Valid {
+			ticket.ShippingZipCode = sZip.String
+		}
+		if sPhone.Valid {
+			ticket.ShippingPhone = sPhone.String
+		}
+		if sMsg.Valid {
+			ticket.ShippingMessage = sMsg.String
 		}
 
 		tickets = append(tickets, ticket)

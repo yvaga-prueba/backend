@@ -56,7 +56,10 @@ type Ticket struct {
 	ClientDNI      string `json:"client_dni"` //
 	ClientContact  string `json:"client_contact"`
 	CouponCode     string `json:"coupon_code"`
-	ItemCount int `json:"item_count"`
+	ShippingAddress string `json:"shipping_address,omitempty"`
+	ShippingZipCode string `json:"shipping_zip_code,omitempty"`
+	ShippingPhone   string `json:"shipping_phone,omitempty"`
+	ShippingMessage string `json:"shipping_message,omitempty"`
 }
 
 // GenerateTicketNumber creates a unique ticket number
