@@ -212,6 +212,6 @@ func FromTicketSummary(ticket model.Ticket, lines []model.TicketLine) TicketSumm
 		ShippingPhone:   ticket.ShippingPhone,
 		ShippingMessage: ticket.ShippingMessage,
 		CreatedAt:      ticket.CreatedAt,
-		ItemCount: ticket.ItemCount,
+		ItemCount:      totalItems,
 	}
 }

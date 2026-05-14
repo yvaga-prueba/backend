@@ -104,7 +104,6 @@ func (r *TicketRepo) GetByID(ctx context.Context, id int64) (*model.Ticket, erro
 		&cancelledAt,
 		&ticket.CreatedAt,
 		&ticket.UpdatedAt,
-		&ticket.ItemCount, 
 	)
 
 	if err == sql.ErrNoRows {
@@ -195,7 +194,6 @@ func (r *TicketRepo) GetByTicketNumber(ctx context.Context, ticketNumber string)
 		&cancelledAt,
 		&ticket.CreatedAt,
 		&ticket.UpdatedAt,
-		&ticket.ItemCount, 
 	)
 	if err == sql.ErrNoRows {
 		return nil, errorcode.ErrNotFound
@@ -421,7 +419,6 @@ func (r *TicketRepo) scanTickets(rows *sql.Rows) ([]model.Ticket, error) {
 			&cancelledAt,
 			&ticket.CreatedAt,
 			&ticket.UpdatedAt,
-			&ticket.ItemCount,
 		)
 		if err != nil {
 			fmt.Println("❌ ERROR EN SCAN TICKETS:", err)
