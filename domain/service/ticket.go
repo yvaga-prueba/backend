@@ -30,7 +30,7 @@ func fireAndLogInvoice(afipSvc AfipService, ticket *model.Ticket) {
 // TicketService defines the business logic for ticket management
 type TicketService interface {
 	// Se agregaron clientDNI y clientContact a la firma
-	CreateTicket(ctx context.Context, userID int64, items []TicketItemRequest, paymentMethod model.PaymentMethod, notes string, status model.TicketStatus, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string) (*model.Ticket, []model.TicketLine, error)
+	CreateTicket(ctx context.Context, userID int64, items []TicketItemRequest, paymentMethod model.PaymentMethod, notes string, status model.TicketStatus, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string, shippingAddr string, shippingZip string, shippingPhone string, shippingMsg string) (*model.Ticket, []model.TicketLine, error)
 	GetTicketByID(ctx context.Context, ticketID int64) (*model.Ticket, []model.TicketLine, error)
 	GetTicketByNumber(ctx context.Context, ticketNumber string) (*model.Ticket, []model.TicketLine, error)
 	GetUserTickets(ctx context.Context, userID int64, filter repo.TicketFilter) ([]model.Ticket, error)
@@ -90,6 +90,10 @@ func (s *ticketServiceImpl) CreateTicket(
 	clientEmail string,
 	clientDNI string, // NUEVO
 	clientContact string, // NUEVO
+	shippingAddr string,
+	shippingZip string,
+	shippingPhone string,
+	shippingMsg string,
 ) (*model.Ticket, []model.TicketLine, error) {
 	if len(items) == 0 {
 		return nil, nil, fmt.Errorf("ticket must have at least one item")
@@ -155,6 +159,10 @@ func (s *ticketServiceImpl) CreateTicket(
 		ClientName:    clientName,
 		ClientEmail:   clientEmail,
 		ClientContact: finalClientContact,
+		ShippingAddress: shippingAddr,
+		ShippingZipCode: shippingZip,
+		ShippingPhone:   shippingPhone,
+		ShippingMessage: shippingMsg,
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}

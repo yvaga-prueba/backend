@@ -73,14 +73,18 @@ type mpPreferenceResponse struct {
 // ── Request/Response tipos de payload ─────────────────────────────────────────
 
 type CreatePreferenceRequest struct {
-	Items         []dto.TicketItemRequest `json:"items"`
-	PaymentMethod string                  `json:"payment_method"` // "card" | "transfer" | "cash"
-	Notes         string                  `json:"notes,omitempty"`
-	ClientName    string                  `json:"client_name"`
-	ClientEmail   string                  `json:"client_email"`
-	CouponCode    string                  `json:"coupon_code,omitempty"`
-	ClientDNI     string                  `json:"client_dni"`     //
-	ClientContact string                  `json:"client_contact"` //
+	Items           []dto.TicketItemRequest `json:"items"`
+	PaymentMethod   string                  `json:"payment_method"` // "card" | "transfer" | "cash"
+	Notes           string                  `json:"notes,omitempty"`
+	ClientName      string                  `json:"client_name"`
+	ClientEmail     string                  `json:"client_email"`
+	CouponCode      string                  `json:"coupon_code,omitempty"`
+	ClientDNI       string                  `json:"client_dni"`
+	ClientContact   string                  `json:"client_contact"`
+	ShippingAddress string                  `json:"shipping_address,omitempty"`
+	ShippingZipCode string                  `json:"shipping_zip_code,omitempty"`
+	ShippingPhone   string                  `json:"shipping_phone,omitempty"`
+	ShippingMessage string                  `json:"shipping_message,omitempty"`
 }
 
 type CreatePreferenceResponse struct {
@@ -136,14 +140,14 @@ func (h *PaymentHandler) CreatePreference(c echo.Context) error {
 		}
 	}
 
-	//  PASAMOS EL DNI Y CONTACTO A LAS FUNCIONES
+	//  PASAMOS EL DNI, CONTACTO Y DATOS DE ENVÍO A LAS FUNCIONES
 	switch req.PaymentMethod {
 	case "card":
-		return h.handleCardPayment(c, ctx, userID, svcItems, req.Notes, req.CouponCode, req.ClientName, req.ClientEmail, req.ClientDNI, req.ClientContact)
+		return h.handleCardPayment(c, ctx, userID, svcItems, req.Notes, req.CouponCode, req.ClientName, req.ClientEmail, req.ClientDNI, req.ClientContact, req.ShippingAddress, req.ShippingZipCode, req.ShippingPhone, req.ShippingMessage)
 	case "transfer":
-		return h.handleTransferPayment(c, ctx, userID, svcItems, req.Notes, req.CouponCode, req.ClientName, req.ClientEmail, req.ClientDNI, req.ClientContact)
+		return h.handleTransferPayment(c, ctx, userID, svcItems, req.Notes, req.CouponCode, req.ClientName, req.ClientEmail, req.ClientDNI, req.ClientContact, req.ShippingAddress, req.ShippingZipCode, req.ShippingPhone, req.ShippingMessage)
 	case "cash":
-		return h.handleCashPayment(c, ctx, userID, svcItems, req.Notes, req.CouponCode, req.ClientName, req.ClientEmail, req.ClientDNI, req.ClientContact)
+		return h.handleCashPayment(c, ctx, userID, svcItems, req.Notes, req.CouponCode, req.ClientName, req.ClientEmail, req.ClientDNI, req.ClientContact, req.ShippingAddress, req.ShippingZipCode, req.ShippingPhone, req.ShippingMessage)
 	default:
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "método de pago inválido: usar card, transfer o cash"})
 	}
@@ -163,10 +167,10 @@ func mapPaymentMethod(frontendMethod string) (model.PaymentMethod, error) {
 	}
 }
 
-// AGREGAMOS clientDNI y clientContact a la firma
+// AGREGAMOS clientDNI, clientContact y datos de envío a la firma
 func (h *PaymentHandler) handleCardPayment(
 	c echo.Context, ctx context.Context,
-	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string,
+	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string, shippingAddr string, shippingZip string, shippingPhone string, shippingMsg string,
 ) error {
 	if !h.cfg.MercadoPago.Enabled {
 		return c.JSON(http.StatusServiceUnavailable, map[string]string{
@@ -179,8 +183,8 @@ func (h *PaymentHandler) handleCardPayment(
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	//  SE LO PASAMOS A CREATETICKET
-	ticket, lines, err := h.ticketService.CreateTicket(ctx, userID, items, payMethod, notes, model.TicketStatusPending, couponCode, clientName, clientEmail, clientDNI, clientContact)
+	//  SE LO PASAMOS A CREATETICKET CON LOS DATOS DE ENVÍO
+	ticket, lines, err := h.ticketService.CreateTicket(ctx, userID, items, payMethod, notes, model.TicketStatusPending, couponCode, clientName, clientEmail, clientDNI, clientContact, shippingAddr, shippingZip, shippingPhone, shippingMsg)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
@@ -247,10 +251,10 @@ func (h *PaymentHandler) handleCardPayment(
 	})
 }
 
-// agreagmos dni y contacto a la firma
+// AGREGAMOS clientDNI, clientContact y datos de envío a la firma
 func (h *PaymentHandler) handleTransferPayment(
 	c echo.Context, ctx context.Context,
-	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string,
+	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string, shippingAddr string, shippingZip string, shippingPhone string, shippingMsg string,
 ) error {
 	if !h.cfg.MercadoPago.Enabled {
 		return c.JSON(http.StatusServiceUnavailable, map[string]string{
@@ -263,8 +267,8 @@ func (h *PaymentHandler) handleTransferPayment(
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	// SE LO PASAMOS A CREATETICKET
-	ticket, lines, err := h.ticketService.CreateTicket(ctx, userID, items, payMethod, notes, model.TicketStatusPending, couponCode, clientName, clientEmail, clientDNI, clientContact)
+	// SE LO PASAMOS A CREATETICKET CON LOS DATOS DE ENVÍO
+	ticket, lines, err := h.ticketService.CreateTicket(ctx, userID, items, payMethod, notes, model.TicketStatusPending, couponCode, clientName, clientEmail, clientDNI, clientContact, shippingAddr, shippingZip, shippingPhone, shippingMsg)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
@@ -333,18 +337,18 @@ func (h *PaymentHandler) handleTransferPayment(
 	})
 }
 
-// agregamos dni y contacto a la firma
+// AGREGAMOS clientDNI, clientContact y datos de envío a la firma
 func (h *PaymentHandler) handleCashPayment(
 	c echo.Context, ctx context.Context,
-	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string,
+	userID int64, items []service.TicketItemRequest, notes string, couponCode string, clientName string, clientEmail string, clientDNI string, clientContact string, shippingAddr string, shippingZip string, shippingPhone string, shippingMsg string,
 ) error {
 	payMethod, err := mapPaymentMethod("cash")
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	// SE LO PASAMOS A CREATETICKET
-	ticket, _, err := h.ticketService.CreateTicket(ctx, userID, items, payMethod, notes, model.TicketStatusPaid, couponCode, clientName, clientEmail, clientDNI, clientContact)
+	// SE LO PASAMOS A CREATETICKET CON LOS DATOS DE ENVÍO
+	ticket, _, err := h.ticketService.CreateTicket(ctx, userID, items, payMethod, notes, model.TicketStatusPaid, couponCode, clientName, clientEmail, clientDNI, clientContact, shippingAddr, shippingZip, shippingPhone, shippingMsg)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
