@@ -24,6 +24,7 @@ WORKDIR /app
 
 COPY --from=builder /app/bin/api ./api
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 EXPOSE 8080
 
