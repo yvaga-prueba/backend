@@ -24,6 +24,7 @@ func Router(
 	settingHandler *handle.SettingHandler,
 	sizeGuideHandler *handle.SizeGuideHandler,
 	favoriteHandler *handle.FavoriteHandler,
+	contactHandler *handle.ContactMessageHandler,
 	cfg config.Config,
 ) *echo.Echo {
 	e := echo.New()
@@ -57,6 +58,9 @@ func Router(
 	e.POST("/api/auth/login", authHandler.Login)
 	e.POST("/api/auth/google", authHandler.GoogleLogin)
 
+	// Ruta pública de contacto (Cualquiera puede mandar mensaje)
+	e.POST("/api/contacts", contactHandler.Create)
+
 	// Rutas públicas de productos (GET)
 	e.GET("/api/products", productHandler.List)
 	e.GET("/api/products/related", productHandler.GetRelated)
@@ -84,6 +88,9 @@ func Router(
 	protected.GET("/auth/me", authHandler.Me)
 	protected.PUT("/auth/password", authHandler.ChangePassword)
 	protected.PUT("/auth/profile", authHandler.UpdateProfile)
+	// Rutas admin de mensajes de contacto
+	protected.GET("/contacts", contactHandler.GetAdminMessages)            
+	protected.PUT("/contacts/:id/status", contactHandler.UpdateStatus)
 
 	// Rutas protegidas de productos
 	protected.POST("/products", productHandler.Create)

@@ -60,6 +60,9 @@ func main() {
 	// repo de favoritos
 	favoriteRepo := entity.NewFavoriteRepository(db)
 
+	// repo de contactos
+	contactRepo := entity.NewContactMessageRepository(db)
+
 	// Storage Service (Google Drive)
 	if !cfg.GoogleDrive.Enabled {
 		log.Fatalf("Google Drive no está configurado. Definí GDRIVE_CLIENT_ID, GDRIVE_CLIENT_SECRET, GDRIVE_REFRESH_TOKEN y GDRIVE_FOLDER_ID en el .env")
@@ -100,6 +103,9 @@ func main() {
 
 	favoriteHandler := handle.NewFavoriteHandler(favoriteService, productImageRepo)
 
+	// handler de contactos
+	contactHandler := handle.NewContactMessageHandler(contactRepo)
+
 	// Facade Handler
 	productFacadeHandler := handle.NewProductFacadeHandler(productHandler, productImageHandler)
 
@@ -131,6 +137,7 @@ func main() {
 		settingHandler,
 		sizeGuideHandler,
 		favoriteHandler,
+		contactHandler,
 		cfg,
 	)
 
